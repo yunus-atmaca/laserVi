@@ -28,7 +28,7 @@ export default class Home extends React.Component<any, any> {
 
     this.state = {
       selectedButton: button.NONE,
-      textInputView: null
+      textInputView: false
     }
   }
 
@@ -47,6 +47,10 @@ export default class Home extends React.Component<any, any> {
 
   _textClicked = () => {
     //console.debug('_textClicked')
+    if (this.state.textInputView) {
+      this.textInputPos = {}
+      this.setState({ textInputView: false })
+    }
 
     if (this.state.selectedButton === button.NONE) {
       this.setState({ selectedButton: button.TEXT })
@@ -61,6 +65,11 @@ export default class Home extends React.Component<any, any> {
 
   _imageClicked = () => {
     //console.debug('_imageClicked')
+
+    if (this.state.textInputView) {
+      this.textInputPos = {}
+      this.setState({ textInputView: false })
+    }
 
     if (this.state.selectedButton === button.NONE) {
       this.setState({ selectedButton: button.IMAGE })
@@ -89,7 +98,7 @@ export default class Home extends React.Component<any, any> {
         }}>
           <View style={{ width: width, height: width - 50, backgroundColor: 'white' }}>
             {
-              this.state.textInputView && (
+              this.state.textInputView && this.state.selectedButton === button.TEXT && (
                 <View style={{
                   position: 'absolute',
                   top: this.textInputPos.top,
