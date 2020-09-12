@@ -10,6 +10,8 @@ import {
 import { ScrollView, } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import BottomSheetView from '../../components/BottomSheetView'
+
 const { width, height } = Dimensions.get('window')
 
 const button = {
@@ -18,9 +20,13 @@ const button = {
   NONE: 'none'
 }
 
+import CustomizeText from '../../components/Customize'
+
 export default class Home extends React.Component<any, any> {
 
   textInputPos: any
+  bottomSheetInfo: any
+
   constructor(props) {
     super(props)
 
@@ -28,7 +34,8 @@ export default class Home extends React.Component<any, any> {
 
     this.state = {
       selectedButton: button.NONE,
-      textInputView: false
+      textInputView: false,
+      showBottomSheet: false
     }
   }
 
@@ -118,7 +125,8 @@ export default class Home extends React.Component<any, any> {
         <ScrollView>
           <View style={{
             marginHorizontal: 12,
-            marginTop: 12
+            marginTop: 12,
+            marginBottom: 24
           }}>
             <View style={{ flexDirection: 'row', height: 72 }}>
               <View style={styles.buttonContainer}>
@@ -150,8 +158,24 @@ export default class Home extends React.Component<any, any> {
                 </TouchableWithoutFeedback>
               </View>
             </View>
+            {
+              this.state.selectedButton === button.TEXT && (
+                <CustomizeText openBottomSheet={(info) => {
+                  console.log(info)
+                  this.bottomSheetInfo = info
+                  this.setState({ showBottomSheet: true })
+                }} />
+              )
+            }
           </View>
         </ScrollView>
+        {
+          this.state.showBottomSheet && (
+            <BottomSheetView
+              data={this.bottomSheetInfo.data}
+              navigatedFrom={this.bottomSheetInfo.navigatedFrom} />
+          )
+        }
       </View >
     )
   }
@@ -171,5 +195,15 @@ const styles = StyleSheet.create({
   textInput: {
     paddingTop: 0,
     paddingBottom: 0,
-  }
+  },
+  textSectionLeft: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+  textSectionRight: {
+    color: 'white',
+    fontSize: 16,
+    marginStart: 12
+  },
 })
