@@ -25,11 +25,11 @@ class CustomizeText extends React.Component<any, any>{
   }
 
   componentDidMount() {
-    this.props.onRef({ _updateState: this._updateState })
+    this.props.onRef({ _updateState: this._updateState, _getTextAttribute: this._getTextAttribute })
   }
 
   componentWillUnmount() {
-    this.props.onRef({ _updateState: null })
+    this.props.onRef({ _updateState: null, _getTextAttribute: null })
   }
 
   _updateState = (which, data) => {
@@ -39,6 +39,13 @@ class CustomizeText extends React.Component<any, any>{
       this.setState({ selectedStyle: data })
     } else {
       this.setState({ selectedSize: data })
+    }
+  }
+
+  _getTextAttribute = () => {
+    return {
+      font: this.state.selectedFont + this._getStyle(this.state.selectedStyle),
+      size: this.state.selectedSize
     }
   }
 
@@ -64,6 +71,18 @@ class CustomizeText extends React.Component<any, any>{
       font: this.state.selectedFont,
       navigatedFrom: 'Sizes'
     })
+  }
+
+  _getStyle = (style) => {
+    if (style === 'Bold') {
+      return '-Bold'
+    } else if (style === 'Italic') {
+      return '-Italic'
+    } else if (style == 'Bold Italic') {
+      return '-BoldItalic'
+    } else {
+      return '-Regular'
+    }
   }
 
   render() {

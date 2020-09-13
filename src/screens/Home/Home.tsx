@@ -117,7 +117,13 @@ export default class Home extends React.Component<any, any> {
                 }}>
                   <TextInput
                     autoFocus={true}
-                    style={styles.textInput}
+                    style={[
+                      styles.textInput,
+                      {
+                        fontSize: this.customizeTextRef._getTextAttribute().size,
+                        fontFamily: this.customizeTextRef._getTextAttribute().font,
+                      }
+                    ]}
                   />
                 </View>
               )
