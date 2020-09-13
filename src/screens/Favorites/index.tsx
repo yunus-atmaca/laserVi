@@ -5,7 +5,6 @@ const Stack = createStackNavigator();
 import Favorites from './Favorites'
 
 function index(props) {
-  console.log(props)
   return (
     <Stack.Navigator headerMode="none" initialRouteName="Favorites">
       <Stack.Screen

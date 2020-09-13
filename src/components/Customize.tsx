@@ -188,12 +188,12 @@ const styles = StyleSheet.create({
   header: {
     color: 'white',
     fontSize: 18,
-    fontFamily: 'Roboto',
+    fontFamily: 'Roboto-Regular',
   },
   textSectionLeft: {
     color: 'white',
     fontSize: 16,
-    fontFamily: 'Roboto',
+    fontFamily: 'Roboto-Regular',
   },
   textSectionRight: {
     color: 'white',

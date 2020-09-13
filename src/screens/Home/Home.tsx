@@ -29,28 +29,34 @@ export default class Home extends React.Component<any, any> {
   textInputPos: any
   bottomSheetInfo: any
 
+  numberOfCreatedViews: number
   constructor(props) {
     super(props)
 
+    this.numberOfCreatedViews = 0
     this.textInputPos = {}
 
     this.state = {
       selectedButton: button.NONE,
       textInputView: false,
-      showBottomSheet: false
+      showBottomSheet: false,
+      views: []
     }
   }
 
   _panelClicked = (event) => {
     //console.debug('_panelClicked')
 
-    console.debug('HERE', event.nativeEvent)
     if (this.state.selectedButton === button.NONE) {
       console.debug('NOTHING SELECTED')
     } else {
-      console.debug(this.state.selectedButton)
       this.textInputPos = { top: event.nativeEvent.locationY, left: event.nativeEvent.locationX }
-      this.setState({ textInputView: true })
+
+      let views: any = []
+      for (let i = 0; i < this.numberOfCreatedViews + 1; ++i) {
+        views.push('HERE')
+      }
+      this.setState({ textInputView: true, views: views })
     }
   }
 
@@ -102,35 +108,36 @@ export default class Home extends React.Component<any, any> {
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: '#141414' }}>
-        <TouchableWithoutFeedback onPress={(event) => {
-          this._panelClicked(event)
-        }}>
-          <View style={{ width: width, height: width - 50, backgroundColor: 'white' }}>
-            {
-              this.state.textInputView && this.state.selectedButton === button.TEXT && (
-                <View style={{
-                  position: 'absolute',
-                  top: this.textInputPos.top,
-                  left: this.textInputPos.left,
-                  borderWidth: 1,
-                  borderColor: 'black'
-                }}>
-                  <TextInput
-                    autoFocus={true}
-                    style={[
-                      styles.textInput,
-                      {
-                        fontSize: this.customizeTextRef._getTextAttribute().size,
-                        fontFamily: this.customizeTextRef._getTextAttribute().font,
-                      }
-                    ]}
-                  />
-                </View>
-              )
-            }
-          </View>
-        </TouchableWithoutFeedback>
         <ScrollView>
+          <TouchableWithoutFeedback onPress={(event) => {
+            this._panelClicked(event)
+          }}>
+            <View style={{ width: width, height: width - 50, backgroundColor: 'white' }}>
+              {
+                this.state.textInputView && this.state.selectedButton === button.TEXT && (
+                  <View style={{
+                    position: 'absolute',
+                    top: this.textInputPos.top,
+                    left: this.textInputPos.left,
+                    borderWidth: 1,
+                    borderColor: 'blue'
+                  }}>
+                    <TextInput
+                      autoFocus={true}
+                      style={[
+                        styles.textInput,
+                        {
+                          fontSize: this.customizeTextRef._getTextAttribute().size,
+                          fontFamily: this.customizeTextRef._getTextAttribute().font,
+                        }
+                      ]}
+                    />
+                  </View>
+                )
+              }
+            </View>
+          </TouchableWithoutFeedback>
+
           <View style={{
             marginHorizontal: 12,
             marginTop: 12,
@@ -166,6 +173,72 @@ export default class Home extends React.Component<any, any> {
                 </TouchableWithoutFeedback>
               </View>
             </View>
+            {
+              this.state.views.length > 0 && (
+                <View style={{}}>
+                  <Text style={{
+                    color: 'white',
+                    fontSize: 18,
+                    fontFamily: 'Roboto-Regular',
+                  }}>
+                    Views
+                  </Text>
+                  <View style={{
+                    backgroundColor: '#bfbfbf',
+                    width: '100%',
+                    height: 1,
+                    marginTop: 4
+                  }} />
+                  <View style={{ width: '100%', paddingVertical: 4 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                      <View style={{
+                        flex: 5,
+                        justifyContent: 'center',
+                      }}>
+                        <Text
+                          ellipsizeMode={'tail'}
+                          numberOfLines={1}
+                          style={{
+                            marginHorizontal: 4,
+                            color: 'white',
+                            fontSize: 14,
+                            fontFamily: 'Roboto-Regular'
+                          }}>
+                          Text</Text>
+                      </View>
+                      <View style={{ flex: 2 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                          <View style={{
+                            height: 24,
+                            width: 24,
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                          }}>
+                            <MaterialCommunityIcons name={'drag-variant'} size={18} color={'white'} />
+                          </View>
+                          <View style={{
+                            height: 24,
+                            width: 24,
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                          }}>
+                            <MaterialCommunityIcons name={'check-circle'} size={18} color={'green'} />
+                          </View>
+                          <View style={{
+                            height: 24,
+                            width: 24,
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                          }}>
+                            <MaterialCommunityIcons name={'close-circle'} size={18} color={'red'} />
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              )
+            }
             {
               this.state.selectedButton === button.TEXT && (
                 <CustomizeText
@@ -212,6 +285,7 @@ const styles = StyleSheet.create({
   textInput: {
     paddingTop: 0,
     paddingBottom: 0,
+    textAlign: 'center'
   },
   textSectionLeft: {
     color: 'white',
