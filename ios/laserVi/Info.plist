@@ -38,7 +38,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -53,5 +53,74 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>AntDesign.ttf</string>
+		<string>Entypo.ttf</string>
+		<string>EvilIcons.ttf</string>
+		<string>Feather.ttf</string>
+		<string>FontAwesome.ttf</string>
+		<string>FontAwesome5_Brands.ttf</string>
+		<string>FontAwesome5_Regular.ttf</string>
+		<string>FontAwesome5_Solid.ttf</string>
+		<string>Fontisto.ttf</string>
+		<string>Foundation.ttf</string>
+		<string>Ionicons.ttf</string>
+		<string>MaterialCommunityIcons.ttf</string>
+		<string>MaterialIcons.ttf</string>
+		<string>Octicons.ttf</string>
+		<string>SimpleLineIcons.ttf</string>
+		<string>Zocial.ttf</string>
+		<string>Ranchers-Regular.ttf</string>
+		<string>Roboto-Bold.ttf</string>
+		<string>Roboto-BoldItalic.ttf</string>
+		<string>Roboto-Italic.ttf</string>
+		<string>Roboto-Regular.ttf</string>
+		<string>AbrilFatface-Regular.ttf</string>
+		<string>Acme-Regular.ttf</string>
+		<string>Anton-Regular.ttf</string>
+		<string>ArchitectsDaughter-Regular.ttf</string>
+		<string>Cabin-Bold.ttf</string>
+		<string>Cabin-BoldItalic.ttf</string>
+		<string>Cabin-Italic.ttf</string>
+		<string>Cabin-Regular.ttf</string>
+		<string>DancingScript-Bold.ttf</string>
+		<string>DancingScript-Regular.ttf</string>
+		<string>FredokaOne-Regular.ttf</string>
+		<string>Grandstander-Bold.ttf</string>
+		<string>Grandstander-BoldItalic.ttf</string>
+		<string>Grandstander-Italic.ttf</string>
+		<string>Grandstander-Regular.ttf</string>
+		<string>IndieFlower-Regular.ttf</string>
+		<string>JosefinSans-Bold.ttf</string>
+		<string>JosefinSans-BoldItalic.ttf</string>
+		<string>JosefinSans-Italic.ttf</string>
+		<string>JosefinSans-Regular.ttf</string>
+		<string>KronaOne-Regular.ttf</string>
+		<string>Kufam-Bold.ttf</string>
+		<string>Kufam-BoldItalic.ttf</string>
+		<string>Kufam-Italic.ttf</string>
+		<string>Kufam-Regular.ttf</string>
+		<string>LibreBaskerville-Bold.ttf</string>
+		<string>LibreBaskerville-Italic.ttf</string>
+		<string>LibreBaskerville-Regular.ttf</string>
+		<string>Lobster-Regular.ttf</string>
+		<string>LongCang-Regular.ttf</string>
+		<string>Merriweather-Bold.ttf</string>
+		<string>Merriweather-BoldItalic.ttf</string>
+		<string>Merriweather-Italic.ttf</string>
+		<string>Merriweather-Regular.ttf</string>
+		<string>Montserrat-Bold.ttf</string>
+		<string>Montserrat-BoldItalic.ttf</string>
+		<string>Montserrat-Italic.ttf</string>
+		<string>Montserrat-Regular.ttf</string>
+		<string>Pacifico-Regular.ttf</string>
+		<string>Righteous-Regular.ttf</string>
+		<string>ShadowsIntoLight-Regular.ttf</string>
+		<string>Ubuntu-Bold.ttf</string>
+		<string>Ubuntu-BoldItalic.ttf</string>
+		<string>Ubuntu-Italic.ttf</string>
+		<string>Ubuntu-Regular.ttf</string>
+	</array>
 </dict>
 </plist>

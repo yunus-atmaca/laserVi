@@ -5,7 +5,6 @@ const Stack = createStackNavigator();
 import Home from './Home'
 
 function index(props) {
-  //console.log(props)
   return (
     <Stack.Navigator headerMode="none" initialRouteName="Home">
       <Stack.Screen

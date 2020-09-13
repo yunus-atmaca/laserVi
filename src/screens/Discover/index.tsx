@@ -5,7 +5,6 @@ const Stack = createStackNavigator();
 import Discover from './Discover'
 
 function index(props) {
-  console.log(props)
   return (
     <Stack.Navigator headerMode="none" initialRouteName="Discover">
       <Stack.Screen

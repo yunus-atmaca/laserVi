@@ -24,6 +24,8 @@ import CustomizeText from '../../components/Customize'
 
 export default class Home extends React.Component<any, any> {
 
+  customizeTextRef: any
+
   textInputPos: any
   bottomSheetInfo: any
 
@@ -160,11 +162,12 @@ export default class Home extends React.Component<any, any> {
             </View>
             {
               this.state.selectedButton === button.TEXT && (
-                <CustomizeText openBottomSheet={(info) => {
-                  console.log(info)
-                  this.bottomSheetInfo = info
-                  this.setState({ showBottomSheet: true })
-                }} />
+                <CustomizeText
+                  onRef={(ref) => { this.customizeTextRef = ref }}
+                  openBottomSheet={(info) => {
+                    this.bottomSheetInfo = info
+                    this.setState({ showBottomSheet: true })
+                  }} />
               )
             }
           </View>
@@ -173,7 +176,15 @@ export default class Home extends React.Component<any, any> {
           this.state.showBottomSheet && (
             <BottomSheetView
               data={this.bottomSheetInfo.data}
-              navigatedFrom={this.bottomSheetInfo.navigatedFrom} />
+              navigatedFrom={this.bottomSheetInfo.navigatedFrom}
+              font={this.bottomSheetInfo.font}
+              onCloseEnd={() => {
+                this.setState({ showBottomSheet: false })
+              }}
+              selectedData={(which, data) => {
+                this.customizeTextRef._updateState(which, data)
+              }}
+            />
           )
         }
       </View >

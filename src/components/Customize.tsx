@@ -8,7 +8,7 @@ import {
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
-import { fonts, style, size } from '../utils/CustomizeText'
+import { fonts, getStyles, size } from '../utils/CustomizeText'
 
 class CustomizeText extends React.Component<any, any>{
 
@@ -18,39 +18,58 @@ class CustomizeText extends React.Component<any, any>{
     super(props)
 
     this.state = {
-      showBottomSheet: false
+      selectedFont: 'Roboto',
+      selectedStyle: 'Regular',
+      selectedSize: 12,
+    }
+  }
+
+  componentDidMount() {
+    this.props.onRef({ _updateState: this._updateState })
+  }
+
+  componentWillUnmount() {
+    this.props.onRef({ _updateState: null })
+  }
+
+  _updateState = (which, data) => {
+    if (which === 'font') {
+      this.setState({ selectedFont: data })
+    } else if (which === 'style') {
+      this.setState({ selectedStyle: data })
+    } else {
+      this.setState({ selectedSize: data })
     }
   }
 
   _fontClicked = () => {
-    console.debug('_fontClicked')
-    this.navigatedFrom = 'fonts'
-    this.data = fonts
-
-    this.props.openBottomSheet({ data: style, navigatedFrom: 'Font' })
+    this.props.openBottomSheet({
+      data: fonts,
+      font: this.state.selectedFont,
+      navigatedFrom: 'Fonts'
+    })
   }
 
   _styleClicked = () => {
-    console.debug('_styleClicked')
-    this.navigatedFrom = 'styles'
-    this.data = style
-
-    this.props.openBottomSheet({ data: style, navigatedFrom: 'Styles' })
-    //this.setState({ showBottomSheet: true })
+    this.props.openBottomSheet({
+      data: getStyles(this.state.selectedFont),
+      font: this.state.selectedFont,
+      navigatedFrom: 'Styles'
+    })
   }
 
   _sizeClicked = () => {
-    console.debug('_sizeClicked')
-    this.navigatedFrom = 'sizes'
-    this.data = size
-
-    this.props.openBottomSheet({ data: style, navigatedFrom: 'Sizes' })
+    this.props.openBottomSheet({
+      data: size,
+      font: this.state.selectedFont,
+      navigatedFrom: 'Sizes'
+    })
   }
 
   render() {
     return (
       <View>
-        <Text style={{ color: 'white', fontSize: 18 }}>
+        <Text style={styles.header}>
           Customize
         </Text>
         <View style={{
@@ -71,8 +90,8 @@ class CustomizeText extends React.Component<any, any>{
               Font:
           </Text>
             <Text style={styles.textSectionRight}>
-              Roboto
-          </Text>
+              {this.state.selectedFont}
+            </Text>
             <View style={{
               height: 32,
               width: 32,
@@ -98,8 +117,8 @@ class CustomizeText extends React.Component<any, any>{
               Style:
           </Text>
             <Text style={styles.textSectionRight}>
-              Bold
-          </Text>
+              {this.state.selectedStyle}
+            </Text>
             <View style={{
               height: 32,
               width: 32,
@@ -123,10 +142,10 @@ class CustomizeText extends React.Component<any, any>{
           }}>
             <Text style={styles.textSectionLeft}>
               Size:
-          </Text>
+            </Text>
             <Text style={styles.textSectionRight}>
-              12
-          </Text>
+              {this.state.selectedSize}
+            </Text>
             <View style={{
               height: 32,
               width: 32,
@@ -147,15 +166,21 @@ class CustomizeText extends React.Component<any, any>{
 }
 
 const styles = StyleSheet.create({
+  header: {
+    color: 'white',
+    fontSize: 18,
+    fontFamily: 'Roboto',
+  },
   textSectionLeft: {
     color: 'white',
     fontSize: 16,
-    fontWeight: 'bold'
+    fontFamily: 'Roboto',
   },
   textSectionRight: {
     color: 'white',
     fontSize: 16,
-    marginStart: 12
+    marginStart: 12,
+    fontFamily: 'Roboto-Regular',
   },
 })
 
