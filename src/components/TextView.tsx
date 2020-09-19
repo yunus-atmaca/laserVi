@@ -7,41 +7,38 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 class TextView extends React.PureComponent<any, any> {
-
-  posTop: any
-  posLeft: any
-  fontSize: any
-  fontFamily: any
-
   constructor(props) {
     super(props)
 
-    this.posTop = this.props.top
-    this.posLeft = this.props.left
-    this.fontSize = this.props.fontSize
-    this.fontFamily = this.props.fontFamily
-
     this.state = {
-      selected: true,
+      selected: this.props.selected,
       saved: this.props.saved,
       text: this.props.text,
+      fontSize: this.props.fontSize,
+      fontFamily: this.props.fontFamily,
+      top: this.props.top,
+      left: this.props.left
     }
   }
 
   componentDidMount() {
-    //this.props.onRef({ _play: this._play, _pause: this._pause })
+    this.props.onRef({ _setState: this._setState })
   }
 
   componentWillUnmount() {
-    //this.props.onRef({ _play: null, _pause: null })
+    this.props.onRef({ _setState: null })
+  }
+
+  _setState = (state) => {
+    this.setState(state)
   }
 
   render() {
     return (
       <View style={{
         position: 'absolute',
-        top: this.posTop,
-        left: this.posLeft,
+        top: this.state.top,
+        left: this.state.left,
         borderWidth: 1,
         borderColor: 'blue'
       }}>
@@ -54,8 +51,8 @@ class TextView extends React.PureComponent<any, any> {
           style={{
             paddingTop: 0,
             paddingBottom: 0,
-            fontSize: this.fontSize,
-            fontFamily: this.fontFamily
+            fontSize: this.state.fontSize,
+            fontFamily: this.state.fontFamily
           }}
         />
         {
@@ -63,20 +60,23 @@ class TextView extends React.PureComponent<any, any> {
             <TouchableOpacity
               onPress={() => {
                 if (this.state.saved) {
-                  this.props.removeViewClicked({
-                    id: this.props.id,
-                    saved: this.state.saved,
-                    text: this.state.text
-                  })
+                  this.props.removeViewClicked(this.props.id)
                 } else {
+                  this.setState({ saved: true })
                   this.props.saveViewClicked({
                     id: this.props.id,
-                    saved: this.state.saved,
-                    text: this.state.text
+                    type: 'text',
+                    view: {
+                      selected: this.state.selected,
+                      saved: true,
+                      text: this.state.text,
+                      fontSize: this.state.fontSize,
+                      fontFamily: this.state.fontFamily,
+                      top: this.state.top,
+                      left: this.state.left,
+                    }
                   })
                 }
-
-                this.setState({ saved: !this.state.saved })
               }}
               style={{
                 position: 'absolute',

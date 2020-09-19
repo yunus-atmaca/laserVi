@@ -13,10 +13,11 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import BottomSheetView from '../../components/BottomSheetView'
 import TextView from '../../components/TextView'
 import Header from '../../components/Header'
+import UUID from '../../utils/UUID'
 
 const { width, height } = Dimensions.get('window')
 
-const button = {
+const VIEW = {
   TEXT: 'text',
   IMAGE: 'image',
   NONE: 'none'
@@ -28,136 +29,110 @@ export default class Home extends React.PureComponent<any, any> {
 
   customizeTextRef: any
 
-  textInputPos: any
   bottomSheetInfo: any
 
   numberOfCreatedViews: number
 
-  views: any
   viewsJSON: any
+
+  selectedViewId: any
   constructor(props) {
     super(props)
 
+    this.selectedViewId = -1
     this.numberOfCreatedViews = 0
-    this.textInputPos = {}
 
-    this.views = []
     this.viewsJSON = []
 
     this.state = {
-      selectedButton: button.NONE,
+      selectedButton: VIEW.NONE,
       textInputView: false,
       showBottomSheet: false,
       views: [],
-      selectedViewId: -1
     }
   }
 
   _panelClicked = (event) => {
-    //console.debug('_panelClicked')
-
-    console.debug('Number of created view: ', this.numberOfCreatedViews)
-
-    if (this.state.selectedButton === button.NONE) {
+    if (this.state.selectedButton === VIEW.NONE) {
       console.debug('NOTHING SELECTED')
-    } else if (this.state.selectedButton === button.TEXT) {
-      if (this.viewsJSON.length === this.numberOfCreatedViews) {
-        //console.debug('viewsJSON: ', this.viewsJSON.length)
+    } else if (this.state.selectedButton === VIEW.TEXT) {
+      if (this.state.views.length === this.numberOfCreatedViews) {
+        this.selectedViewId = UUID();
+        console.log(this.selectedViewId)
         let textInfo = {
-          ref: this.numberOfCreatedViews,
-          type: button.TEXT,
+          id: this.selectedViewId,
+          type: VIEW.TEXT,
           view: {
             top: event.nativeEvent.locationY,
             left: event.nativeEvent.locationX,
             fontSize: this.customizeTextRef._getTextAttribute().size,
             fontFamily: this.customizeTextRef._getTextAttribute().font,
+            selected: true,
             saved: false,
             text: ''
           }
         }
-
-        this.viewsJSON.push(textInfo)
-        this.views.push(this._createTextView(textInfo))
-
-        this.setState({ views: [] }, () => {
-          this.setState({ views: this.views })
+        this.setState({
+          views: this.state.views.concat([this._createTextView(textInfo)])
         })
-      } else if (this.numberOfCreatedViews < this.viewsJSON.length) {
-        //console.debug('viewsJSON: ', this.viewsJSON.length)
-
-        this.viewsJSON.splice(-1, 1)
-        this.views.splice(-1, 1)
-
-        let textInfo = {
-          ref: this.views.length,
-          type: button.TEXT,
-          view: {
+      } else {
+        this[this.selectedViewId]._setState(
+          {
             top: event.nativeEvent.locationY,
-            left: event.nativeEvent.locationX,
-            fontSize: this.customizeTextRef._getTextAttribute().size,
-            fontFamily: this.customizeTextRef._getTextAttribute().font,
-            saved: false,
-            text: ''
+            left: event.nativeEvent.locationX
           }
-        }
-
-        this.viewsJSON.push(textInfo)
-        this.views.push(this._createTextView(textInfo))
-
-        this.setState({ views: [] }, () => {
-          this.setState({ views: this.views })
-        })
+        )
       }
-    } else if (this.state.selectedButton === button.IMAGE) {
+    } else if (this.state.selectedButton === VIEW.IMAGE) {
 
     }
   }
 
   _textClicked = () => {
-    //console.debug('_textClicked')
-    /*if (this.state.textInputView) {
-      this.textInputPos = {}
-      this.setState({ textInputView: false })
-    }*/
-
-    if (this.state.selectedButton === button.NONE) {
-      this.setState({ selectedButton: button.TEXT })
+    if (this.state.selectedButton === VIEW.NONE) {
+      this.setState({ selectedButton: VIEW.TEXT })
     } else {
-      if (this.state.selectedButton === button.IMAGE) {
-        this.setState({ selectedButton: button.TEXT })
+      if (this.state.selectedButton === VIEW.IMAGE) {
+        this.setState({ selectedButton: VIEW.TEXT })
       } else {
-        this.setState({ selectedButton: button.NONE })
+        this.setState({ selectedButton: VIEW.NONE })
       }
     }
   }
 
   _imageClicked = () => {
-    //console.debug('_imageClicked')
-
-    /*if (this.state.textInputView) {
-      this.textInputPos = {}
-      this.setState({ textInputView: false })
-    }*/
-
-    if (this.state.selectedButton === button.NONE) {
-      this.setState({ selectedButton: button.IMAGE })
+    if (this.state.selectedButton === VIEW.NONE) {
+      this.setState({ selectedButton: VIEW.IMAGE })
     } else {
-      if (this.state.selectedButton === button.TEXT) {
-        this.setState({ selectedButton: button.IMAGE })
+      if (this.state.selectedButton === VIEW.TEXT) {
+        this.setState({ selectedButton: VIEW.IMAGE })
       } else {
-        this.setState({ selectedButton: button.NONE })
+        this.setState({ selectedButton: VIEW.NONE })
       }
     }
+  }
+
+  _checkViews = () => {
+
+  }
+
+  _setSelectedView = (id) => {
+
+  }
+
+  _createImageView = (props) => {
+
   }
 
   _createTextView = (props) => {
     return (
       <TextView
-        key={props.ref}
-        id={props.ref}
+        key={props.id}
+        id={props.id}
         onRef={(ref) => {
-          props.ref = ref
+          this[props.id] = ref
         }}
+        selected={props.view.selected}
         text={props.view.text}
         saved={props.view.saved}
         top={props.view.top}
@@ -171,17 +146,34 @@ export default class Home extends React.PureComponent<any, any> {
   }
 
   _saveViewClicked = (props) => {
-    console.debug('_saveViewClicked: ', props.id)
     this.numberOfCreatedViews += 1
-    this.viewsJSON[props.id].view.saved = props.saved
-    this.viewsJSON[props.id].view.text = props.text
-
-    this.views[props.id] = this._createTextView(this.viewsJSON[props.id])
-    //console.debug(this.viewsJSON)
+    this.viewsJSON.push(props)
   }
 
   _removeViewClicked = (id) => {
-    console.debug('_removeViewClicked: ', id)
+    //console.debug(this.viewsJSON)
+    console.log(this.state.views)
+
+    let deletedIndex = -1
+    for (let i = 0; i < this.viewsJSON.length; ++i) {
+      //console.debug(this.viewsJSON[i].view.id + ' ||| ' + id)
+      if (this.viewsJSON[i].id === id) {
+        //console.debug('HERE')
+        deletedIndex = i
+        break;
+      }
+    }
+
+    console.debug(deletedIndex)
+    if (deletedIndex !== -1) {
+      this.numberOfCreatedViews -= 1
+      //this.setState({ views: this.state.views.splice(deletedIndex, 1) })
+
+      this.setState(prevState => ({
+        views: prevState.views.splice(deletedIndex, 1),
+      }));
+    }
+    console.log(this.state.views)
   }
 
   _getContainerSize = (button) => {
@@ -224,13 +216,13 @@ export default class Home extends React.PureComponent<any, any> {
               <View style={styles.buttonContainer}>
                 <TouchableWithoutFeedback onPress={this._textClicked}>
                   <View style={[styles.button, {
-                    width: this._getContainerSize(button.TEXT),
-                    height: this._getContainerSize(button.TEXT),
+                    width: this._getContainerSize(VIEW.TEXT),
+                    height: this._getContainerSize(VIEW.TEXT),
                     backgroundColor: '#bfbfbf',
                   }]}>
                     <MaterialCommunityIcons
                       name={'format-text'}
-                      size={this._getButtonSize(button.TEXT)}
+                      size={this._getButtonSize(VIEW.TEXT)}
                       color={'black'} />
                   </View>
                 </TouchableWithoutFeedback>
@@ -238,13 +230,13 @@ export default class Home extends React.PureComponent<any, any> {
               <View style={styles.buttonContainer}>
                 <TouchableWithoutFeedback onPress={this._imageClicked}>
                   <View style={[styles.button, {
-                    width: this._getContainerSize(button.IMAGE),
-                    height: this._getContainerSize(button.IMAGE),
+                    width: this._getContainerSize(VIEW.IMAGE),
+                    height: this._getContainerSize(VIEW.IMAGE),
                     backgroundColor: '#bfbfbf',
                   }]}>
                     <MaterialCommunityIcons
                       name={'image-outline'}
-                      size={this._getButtonSize(button.IMAGE)}
+                      size={this._getButtonSize(VIEW.IMAGE)}
                       color={'black'} />
                   </View>
                 </TouchableWithoutFeedback>
@@ -317,7 +309,7 @@ export default class Home extends React.PureComponent<any, any> {
               )
             }
             {
-              this.state.selectedButton === button.TEXT && (
+              this.state.selectedButton === VIEW.TEXT && (
                 <CustomizeText
                   onRef={(ref) => { this.customizeTextRef = ref }}
                   openBottomSheet={(info) => {
