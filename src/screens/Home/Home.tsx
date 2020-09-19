@@ -11,6 +11,8 @@ import { ScrollView, } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import BottomSheetView from '../../components/BottomSheetView'
+import TextView from '../../components/TextView'
+import Header from '../../components/Header'
 
 const { width, height } = Dimensions.get('window')
 
@@ -22,7 +24,7 @@ const button = {
 
 import CustomizeText from '../../components/Customize'
 
-export default class Home extends React.Component<any, any> {
+export default class Home extends React.PureComponent<any, any> {
 
   customizeTextRef: any
 
@@ -30,42 +32,93 @@ export default class Home extends React.Component<any, any> {
   bottomSheetInfo: any
 
   numberOfCreatedViews: number
+
+  views: any
+  viewsJSON: any
   constructor(props) {
     super(props)
 
     this.numberOfCreatedViews = 0
     this.textInputPos = {}
 
+    this.views = []
+    this.viewsJSON = []
+
     this.state = {
       selectedButton: button.NONE,
       textInputView: false,
       showBottomSheet: false,
-      views: []
+      views: [],
+      selectedViewId: -1
     }
   }
 
   _panelClicked = (event) => {
     //console.debug('_panelClicked')
 
+    console.debug('Number of created view: ', this.numberOfCreatedViews)
+
     if (this.state.selectedButton === button.NONE) {
       console.debug('NOTHING SELECTED')
-    } else {
-      this.textInputPos = { top: event.nativeEvent.locationY, left: event.nativeEvent.locationX }
+    } else if (this.state.selectedButton === button.TEXT) {
+      if (this.viewsJSON.length === this.numberOfCreatedViews) {
+        //console.debug('viewsJSON: ', this.viewsJSON.length)
+        let textInfo = {
+          ref: this.numberOfCreatedViews,
+          type: button.TEXT,
+          view: {
+            top: event.nativeEvent.locationY,
+            left: event.nativeEvent.locationX,
+            fontSize: this.customizeTextRef._getTextAttribute().size,
+            fontFamily: this.customizeTextRef._getTextAttribute().font,
+            saved: false,
+            text: ''
+          }
+        }
 
-      let views: any = []
-      for (let i = 0; i < this.numberOfCreatedViews + 1; ++i) {
-        views.push('HERE')
+        this.viewsJSON.push(textInfo)
+        this.views.push(this._createTextView(textInfo))
+
+        this.setState({ views: [] }, () => {
+          this.setState({ views: this.views })
+        })
+      } else if (this.numberOfCreatedViews < this.viewsJSON.length) {
+        //console.debug('viewsJSON: ', this.viewsJSON.length)
+
+        this.viewsJSON.splice(-1, 1)
+        this.views.splice(-1, 1)
+
+        let textInfo = {
+          ref: this.views.length,
+          type: button.TEXT,
+          view: {
+            top: event.nativeEvent.locationY,
+            left: event.nativeEvent.locationX,
+            fontSize: this.customizeTextRef._getTextAttribute().size,
+            fontFamily: this.customizeTextRef._getTextAttribute().font,
+            saved: false,
+            text: ''
+          }
+        }
+
+        this.viewsJSON.push(textInfo)
+        this.views.push(this._createTextView(textInfo))
+
+        this.setState({ views: [] }, () => {
+          this.setState({ views: this.views })
+        })
       }
-      this.setState({ textInputView: true, views: views })
+    } else if (this.state.selectedButton === button.IMAGE) {
+
     }
   }
 
   _textClicked = () => {
     //console.debug('_textClicked')
-    if (this.state.textInputView) {
+    /*if (this.state.textInputView) {
       this.textInputPos = {}
       this.setState({ textInputView: false })
-    }
+    }*/
 
     if (this.state.selectedButton === button.NONE) {
       this.setState({ selectedButton: button.TEXT })
@@ -81,10 +134,10 @@ export default class Home extends React.Component<any, any> {
   _imageClicked = () => {
     //console.debug('_imageClicked')
 
-    if (this.state.textInputView) {
+    /*if (this.state.textInputView) {
       this.textInputPos = {}
       this.setState({ textInputView: false })
-    }
+    }*/
 
     if (this.state.selectedButton === button.NONE) {
       this.setState({ selectedButton: button.IMAGE })
@@ -95,6 +148,40 @@ export default class Home extends React.Component<any, any> {
         this.setState({ selectedButton: button.NONE })
       }
     }
+  }
+
+  _createTextView = (props) => {
+    return (
+      <TextView
+        key={props.ref}
+        id={props.ref}
+        onRef={(ref) => {
+          props.ref = ref
+        }}
+        text={props.view.text}
+        saved={props.view.saved}
+        top={props.view.top}
+        left={props.view.left}
+        fontSize={props.view.fontSize}
+        fontFamily={props.view.fontFamily}
+        saveViewClicked={this._saveViewClicked}
+        removeViewClicked={this._removeViewClicked}
+      />
+    )
+  }
+
+  _saveViewClicked = (props) => {
+    console.debug('_saveViewClicked: ', props.id)
+    this.numberOfCreatedViews += 1
+    this.viewsJSON[props.id].view.saved = props.saved
+    this.viewsJSON[props.id].view.text = props.text
+
+    this.views[props.id] = this._createTextView(this.viewsJSON[props.id])
+    //console.debug(this.viewsJSON)
+  }
+
+  _removeViewClicked = (id) => {
+    console.debug('_removeViewClicked: ', id)
   }
 
   _getContainerSize = (button) => {
@@ -108,40 +195,30 @@ export default class Home extends React.Component<any, any> {
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: '#141414' }}>
-        <ScrollView>
+        <Header header={'Panel'} />
+        <ScrollView
+          keyboardShouldPersistTaps={'always'}
+          showsVerticalScrollIndicator={false}>
           <TouchableWithoutFeedback onPress={(event) => {
             this._panelClicked(event)
           }}>
-            <View style={{ width: width, height: width - 50, backgroundColor: 'white' }}>
+            <View style={{ width: width, height: width, backgroundColor: 'white' }}>
               {
-                this.state.textInputView && this.state.selectedButton === button.TEXT && (
-                  <View style={{
-                    position: 'absolute',
-                    top: this.textInputPos.top,
-                    left: this.textInputPos.left,
-                    borderWidth: 1,
-                    borderColor: 'blue'
-                  }}>
-                    <TextInput
-                      autoFocus={true}
-                      style={[
-                        styles.textInput,
-                        {
-                          fontSize: this.customizeTextRef._getTextAttribute().size,
-                          fontFamily: this.customizeTextRef._getTextAttribute().font,
-                        }
-                      ]}
-                    />
-                  </View>
+                this.state.views.length > 0 && (
+                  this.state.views.map(view => {
+                    return (
+                      view
+                    )
+                  })
                 )
               }
             </View>
           </TouchableWithoutFeedback>
-
           <View style={{
-            marginHorizontal: 12,
-            marginTop: 12,
-            marginBottom: 24
+            paddingHorizontal: 12,
+            paddingTop: 12,
+            marginBottom: 24,
+            backgroundColor: '#141414'
           }}>
             <View style={{ flexDirection: 'row', height: 72 }}>
               <View style={styles.buttonContainer}>
