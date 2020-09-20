@@ -119,8 +119,10 @@ export default class Home extends React.PureComponent<any, any> {
       this.setState({ selectedButton: VIEW.TEXT })
     } else {
       if (this.state.selectedButton === VIEW.IMAGE) {
+        this._checkViews()
         this.setState({ selectedButton: VIEW.TEXT })
       } else {
+        this._checkViews()
         this.setState({ selectedButton: VIEW.NONE })
       }
     }
@@ -131,8 +133,10 @@ export default class Home extends React.PureComponent<any, any> {
       this.setState({ selectedButton: VIEW.IMAGE })
     } else {
       if (this.state.selectedButton === VIEW.TEXT) {
+        this._checkViews()
         this.setState({ selectedButton: VIEW.IMAGE })
       } else {
+        this._checkViews()
         this.setState({ selectedButton: VIEW.NONE })
       }
     }
@@ -150,7 +154,11 @@ export default class Home extends React.PureComponent<any, any> {
     return mIndex
   }
   _checkViews = () => {
-
+    for (let i = 0; i < this.viewsJSON.length; ++i) {
+      if (!this.viewsJSON[i].view.saved) {
+        this._removeViewClicked(this.viewsJSON[i].id)
+      }
+    }
   }
 
   _setSelectedView = (view) => {
@@ -245,7 +253,9 @@ export default class Home extends React.PureComponent<any, any> {
     }
 
     if (deletedIndex !== -1) {
-      this.numberOfCreatedViews -= 1
+      if (this.numberOfCreatedViews !== 0) {
+        this.numberOfCreatedViews -= 1
+      }
 
       let views = [...this.state.views]
       let viewsInfo = [...this.state.viewsInfo]
@@ -253,6 +263,13 @@ export default class Home extends React.PureComponent<any, any> {
       views.splice(deletedIndex, 1)
       viewsInfo.splice(deletedIndex, 1)
       this.viewsJSON.splice(deletedIndex, 1)
+
+      if (this.selectedView.index === deletedIndex) {
+        this.selectedView = {
+          index: -1,
+          id: ''
+        }
+      }
 
       this.setState(() => {
         return {
