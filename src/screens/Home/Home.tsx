@@ -38,11 +38,15 @@ export default class Home extends React.PureComponent<any, any> {
 
   viewsJSON: any
 
-  selectedViewId: any
+  selectedView: any
   constructor(props) {
     super(props)
 
-    this.selectedViewId = -1
+    this.selectedView = {
+      index: -1,
+      id: ''
+    }
+
     this.numberOfCreatedViews = 0
 
     this.viewsJSON = []
@@ -64,10 +68,10 @@ export default class Home extends React.PureComponent<any, any> {
       console.debug('NOTHING SELECTED')
     } else if (this.state.selectedButton === VIEW.TEXT) {
       if (this.state.views.length === this.numberOfCreatedViews) {
-        this.selectedViewId = UUID();
+        let id = UUID()
 
         let textInfo = {
-          id: this.selectedViewId,
+          id: id,
           type: VIEW.TEXT,
           view: {
             top: event.nativeEvent.locationY,
@@ -84,20 +88,26 @@ export default class Home extends React.PureComponent<any, any> {
         this.setState({
           views: this.state.views.concat([this._createTextView(textInfo)]),
           viewsInfo: this.state.viewsInfo.concat([this._createViewInfo(textInfo)]),
+        }, () => {
+          this._setSelectedView({
+            index: this.numberOfCreatedViews,
+            id: id
+          });
         })
+
       } else {
-        this.viewsRef[this.selectedViewId]._setState(
+        this.viewsRef[this.selectedView.id]._setState(
           {
             top: event.nativeEvent.locationY,
             left: event.nativeEvent.locationX
           }
         )
 
-        let index = this._getIndexById(this.selectedViewId)
-        if (index >= 0) {
-          this.viewsJSON[index].view.top = event.nativeEvent.locationY;
-          this.viewsJSON[index].view.left = event.nativeEvent.locationX;
-        }
+        //let index = this._getIndexById(this.selectedView)
+        //if (index >= 0) {
+        this.viewsJSON[this.selectedView.index].view.top = event.nativeEvent.locationY;
+        this.viewsJSON[this.selectedView.index].view.left = event.nativeEvent.locationX;
+        //}
       }
     } else if (this.state.selectedButton === VIEW.IMAGE) {
 
@@ -143,8 +153,24 @@ export default class Home extends React.PureComponent<any, any> {
 
   }
 
-  _setSelectedView = (id) => {
+  _setSelectedView = (view) => {
+    if (this.selectedView.index !== -1) {
+      if (view.id !== this.selectedView.id) {
+        //console.debug('FALSE: ' + view.id + ' | | ' + this.selectedView.id)
+        this.viewsRef[this.selectedView.id]._setState({ selected: false })
+        this.viewsInfoRef[this.selectedView.id]._setState({ selected: false })
+        this.viewsJSON[this.selectedView.index].view.selected = false
+      }
+    }
 
+    if (view.id !== this.selectedView.id) {
+      //console.debug('TRUE: ' + view.id + ' | | ' + this.selectedView.id)
+      this.viewsRef[view.id]._setState({ selected: true })
+      this.viewsInfoRef[view.id]._setState({ selected: true })
+      this.viewsJSON[view.index].view.selected = true
+    }
+
+    this.selectedView = view;
   }
 
   _createViewInfo = (props) => {
@@ -152,6 +178,7 @@ export default class Home extends React.PureComponent<any, any> {
       <ViewInfo
         key={props.id}
         id={props.id}
+        index={props.index}
         onRef={(ref) => {
           this.viewsInfoRef[props.id] = ref
         }}
@@ -161,6 +188,7 @@ export default class Home extends React.PureComponent<any, any> {
         type={props.type}
         saveViewClicked={this._saveViewClicked}
         removeViewClicked={this._removeViewClicked}
+        onFocus={this._onFocusView}
       />
     )
   }
@@ -174,6 +202,7 @@ export default class Home extends React.PureComponent<any, any> {
       <TextView
         key={props.id}
         id={props.id}
+        index={props.index}
         onRef={(ref) => {
           this.viewsRef[props.id] = ref
         }}
@@ -187,6 +216,7 @@ export default class Home extends React.PureComponent<any, any> {
         saveViewClicked={this._saveViewClicked}
         removeViewClicked={this._removeViewClicked}
         onTextChange={this._onTextChange}
+        onFocus={this._onFocusView}
       />
     )
   }
@@ -234,11 +264,14 @@ export default class Home extends React.PureComponent<any, any> {
   }
 
   _onTextChange = (id, text) => {
-
     let index = this._getIndexById(id)
     if (index >= 0) {
       this.viewsInfoRef[id]._setState({ name: text })
     }
+  }
+
+  _onFocusView = (id) => {
+    this._setSelectedView({ id: id, index: this._getIndexById(id) })
   }
 
   _getContainerSize = (button) => {

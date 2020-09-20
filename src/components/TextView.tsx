@@ -39,7 +39,7 @@ class TextView extends React.PureComponent<any, any> {
         position: 'absolute',
         top: this.state.top,
         left: this.state.left,
-        borderWidth: 1,
+        borderWidth: this.state.selected ? 1 : 0,
         borderColor: 'blue'
       }}>
         <TextInput
@@ -49,6 +49,9 @@ class TextView extends React.PureComponent<any, any> {
           }}
           value={this.state.text}
           autoFocus={true}
+          onFocus={() => {
+            this.props.onFocus(this.props.id)
+          }}
           style={{
             paddingTop: 0,
             paddingBottom: 0,
