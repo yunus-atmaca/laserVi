@@ -12,6 +12,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import BottomSheetView from '../../components/BottomSheetView'
 import TextView from '../../components/TextView'
+import ViewInfo from '../../components/ViewInfo'
 import Header from '../../components/Header'
 import UUID from '../../utils/UUID'
 
@@ -28,6 +29,8 @@ import CustomizeText from '../../components/Customize'
 export default class Home extends React.PureComponent<any, any> {
 
   customizeTextRef: any
+  viewsRef: any
+  viewsInfoRef: any
 
   bottomSheetInfo: any
 
@@ -44,11 +47,15 @@ export default class Home extends React.PureComponent<any, any> {
 
     this.viewsJSON = []
 
+    this.viewsRef = {}
+    this.viewsInfoRef = {}
+
     this.state = {
       selectedButton: VIEW.NONE,
       textInputView: false,
       showBottomSheet: false,
       views: [],
+      viewsInfo: []
     }
   }
 
@@ -58,7 +65,7 @@ export default class Home extends React.PureComponent<any, any> {
     } else if (this.state.selectedButton === VIEW.TEXT) {
       if (this.state.views.length === this.numberOfCreatedViews) {
         this.selectedViewId = UUID();
-        console.log(this.selectedViewId)
+
         let textInfo = {
           id: this.selectedViewId,
           type: VIEW.TEXT,
@@ -72,16 +79,25 @@ export default class Home extends React.PureComponent<any, any> {
             text: ''
           }
         }
+
+        this.viewsJSON.push(textInfo)
         this.setState({
-          views: this.state.views.concat([this._createTextView(textInfo)])
+          views: this.state.views.concat([this._createTextView(textInfo)]),
+          viewsInfo: this.state.viewsInfo.concat([this._createViewInfo(textInfo)]),
         })
       } else {
-        this[this.selectedViewId]._setState(
+        this.viewsRef[this.selectedViewId]._setState(
           {
             top: event.nativeEvent.locationY,
             left: event.nativeEvent.locationX
           }
         )
+
+        let index = this._getIndexById(this.selectedViewId)
+        if (index >= 0) {
+          this.viewsJSON[index].view.top = event.nativeEvent.locationY;
+          this.viewsJSON[index].view.left = event.nativeEvent.locationX;
+        }
       }
     } else if (this.state.selectedButton === VIEW.IMAGE) {
 
@@ -112,12 +128,41 @@ export default class Home extends React.PureComponent<any, any> {
     }
   }
 
+  _getIndexById = (id) => {
+    let mIndex = -1
+    for (let i = 0; i < this.viewsJSON.length; ++i) {
+      if (this.viewsJSON[i].id === id) {
+        mIndex = i
+        break;
+      }
+    }
+
+    return mIndex
+  }
   _checkViews = () => {
 
   }
 
   _setSelectedView = (id) => {
 
+  }
+
+  _createViewInfo = (props) => {
+    return (
+      <ViewInfo
+        key={props.id}
+        id={props.id}
+        onRef={(ref) => {
+          this.viewsInfoRef[props.id] = ref
+        }}
+        selected={props.view.selected}
+        name={props.view.text}
+        saved={props.view.saved}
+        type={props.type}
+        saveViewClicked={this._saveViewClicked}
+        removeViewClicked={this._removeViewClicked}
+      />
+    )
   }
 
   _createImageView = (props) => {
@@ -130,7 +175,7 @@ export default class Home extends React.PureComponent<any, any> {
         key={props.id}
         id={props.id}
         onRef={(ref) => {
-          this[props.id] = ref
+          this.viewsRef[props.id] = ref
         }}
         selected={props.view.selected}
         text={props.view.text}
@@ -141,13 +186,23 @@ export default class Home extends React.PureComponent<any, any> {
         fontFamily={props.view.fontFamily}
         saveViewClicked={this._saveViewClicked}
         removeViewClicked={this._removeViewClicked}
+        onTextChange={this._onTextChange}
       />
     )
   }
 
   _saveViewClicked = (props) => {
     this.numberOfCreatedViews += 1
-    this.viewsJSON.push(props)
+    let index = this._getIndexById(props.id)
+    if (index >= 0) {
+      this.viewsJSON[index].view.selected = props.view.selected
+      this.viewsJSON[index].view.saved = props.view.saved
+      this.viewsJSON[index].view.text = props.view.text
+      this.viewsJSON[index].view.fontSize = props.view.fontSize
+      this.viewsJSON[index].view.fontFamily = props.view.fontFamily
+      this.viewsJSON[index].view.top = props.view.top
+      this.viewsJSON[index].view.left = props.view.left
+    }
   }
 
   _removeViewClicked = (id) => {
@@ -161,14 +216,28 @@ export default class Home extends React.PureComponent<any, any> {
 
     if (deletedIndex !== -1) {
       this.numberOfCreatedViews -= 1
+
       let views = [...this.state.views]
+      let viewsInfo = [...this.state.viewsInfo]
+
       views.splice(deletedIndex, 1)
+      viewsInfo.splice(deletedIndex, 1)
       this.viewsJSON.splice(deletedIndex, 1)
+
       this.setState(() => {
         return {
-          views: views
+          views: views,
+          viewsInfo: viewsInfo
         }
       })
+    }
+  }
+
+  _onTextChange = (id, text) => {
+
+    let index = this._getIndexById(id)
+    if (index >= 0) {
+      this.viewsInfoRef[id]._setState({ name: text })
     }
   }
 
@@ -239,8 +308,8 @@ export default class Home extends React.PureComponent<any, any> {
               </View>
             </View>
             {
-              this.state.views.length > 0 && (
-                <View style={{}}>
+              this.state.viewsInfo.length > 0 && (
+                <View>
                   <Text style={{
                     color: 'white',
                     fontSize: 18,
@@ -254,53 +323,13 @@ export default class Home extends React.PureComponent<any, any> {
                     height: 1,
                     marginTop: 4
                   }} />
-                  <View style={{ width: '100%', paddingVertical: 4 }}>
-                    <View style={{ flexDirection: 'row' }}>
-                      <View style={{
-                        flex: 5,
-                        justifyContent: 'center',
-                      }}>
-                        <Text
-                          ellipsizeMode={'tail'}
-                          numberOfLines={1}
-                          style={{
-                            marginHorizontal: 4,
-                            color: 'white',
-                            fontSize: 14,
-                            fontFamily: 'Roboto-Regular'
-                          }}>
-                          Text</Text>
-                      </View>
-                      <View style={{ flex: 2 }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                          <View style={{
-                            height: 24,
-                            width: 24,
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}>
-                            <MaterialCommunityIcons name={'drag-variant'} size={18} color={'white'} />
-                          </View>
-                          <View style={{
-                            height: 24,
-                            width: 24,
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}>
-                            <MaterialCommunityIcons name={'check-circle'} size={18} color={'green'} />
-                          </View>
-                          <View style={{
-                            height: 24,
-                            width: 24,
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}>
-                            <MaterialCommunityIcons name={'close-circle'} size={18} color={'red'} />
-                          </View>
-                        </View>
-                      </View>
-                    </View>
-                  </View>
+                  {
+                    this.state.viewsInfo.map(view => {
+                      return (
+                        view
+                      )
+                    })
+                  }
                 </View>
               )
             }

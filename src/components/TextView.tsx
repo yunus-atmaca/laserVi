@@ -45,6 +45,7 @@ class TextView extends React.PureComponent<any, any> {
         <TextInput
           onChangeText={(text) => {
             this.setState({ text: text })
+            this.props.onTextChange(this.props.id, text)
           }}
           value={this.state.text}
           autoFocus={true}
@@ -62,6 +63,10 @@ class TextView extends React.PureComponent<any, any> {
                 if (this.state.saved) {
                   this.props.removeViewClicked(this.props.id)
                 } else {
+                  if (this.state.text === '') {
+                    console.debug('TEXT NOT ENTERED')
+                    return;
+                  }
                   this.setState({ saved: true })
                   this.props.saveViewClicked({
                     id: this.props.id,
