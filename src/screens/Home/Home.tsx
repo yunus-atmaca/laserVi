@@ -9,6 +9,7 @@ import {
 } from 'react-native'
 import { ScrollView, } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import ViewShot, { captureRef } from "react-native-view-shot";
 
 import BottomSheetView from '../../components/BottomSheetView'
 import TextView from '../../components/TextView'
@@ -31,6 +32,7 @@ export default class Home extends React.PureComponent<any, any> {
   customizeTextRef: any
   viewsRef: any
   viewsInfoRef: any
+  panelRef: any
 
   bottomSheetInfo: any
 
@@ -309,7 +311,11 @@ export default class Home extends React.PureComponent<any, any> {
           <TouchableWithoutFeedback onPress={(event) => {
             this._panelClicked(event)
           }}>
-            <View style={{ width: width, height: width, backgroundColor: 'white' }}>
+            <View
+              ref={(ref) => {
+                this.panelRef = ref
+              }}
+              style={{ width: width, height: width, backgroundColor: 'white' }}>
               {
                 this.state.views.length > 0 && (
                   this.state.views.map(view => {
@@ -412,6 +418,37 @@ export default class Home extends React.PureComponent<any, any> {
               )
             }
           </View>
+          <TouchableWithoutFeedback onPress={() => {
+            captureRef(this.panelRef, {
+              format: "jpg",
+              quality: 1
+            }).then(
+              uri => {
+                console.log("Image saved to", uri)
+                this.props.navigation.navigate('Preview', {
+                  uri: uri
+                })
+              },
+              error => console.error("Oops, snapshot failed", error)
+            );
+          }}>
+            <View style={{
+              height: 44,
+              width: 108,
+              borderRadius: 22,
+              backgroundColor: '#FF9900',
+              alignSelf: 'center',
+              marginVertical: 12,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Text style={{
+                color: 'white',
+                fontSize: 18,
+                fontWeight: 'bold'
+              }}>Start</Text>
+            </View>
+          </TouchableWithoutFeedback>
         </ScrollView>
         {
           this.state.showBottomSheet && (

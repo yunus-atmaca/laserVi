@@ -2,8 +2,6 @@ import React from 'react'
 import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
 
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-
 
 export default function Tabbar({ state, descriptors, navigation }) {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
