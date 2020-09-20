@@ -151,29 +151,25 @@ export default class Home extends React.PureComponent<any, any> {
   }
 
   _removeViewClicked = (id) => {
-    //console.debug(this.viewsJSON)
-    console.log(this.state.views)
-
     let deletedIndex = -1
     for (let i = 0; i < this.viewsJSON.length; ++i) {
-      //console.debug(this.viewsJSON[i].view.id + ' ||| ' + id)
       if (this.viewsJSON[i].id === id) {
-        //console.debug('HERE')
         deletedIndex = i
         break;
       }
     }
 
-    console.debug(deletedIndex)
     if (deletedIndex !== -1) {
       this.numberOfCreatedViews -= 1
-      //this.setState({ views: this.state.views.splice(deletedIndex, 1) })
-
-      this.setState(prevState => ({
-        views: prevState.views.splice(deletedIndex, 1),
-      }));
+      let views = [...this.state.views]
+      views.splice(deletedIndex, 1)
+      this.viewsJSON.splice(deletedIndex, 1)
+      this.setState(() => {
+        return {
+          views: views
+        }
+      })
     }
-    console.log(this.state.views)
   }
 
   _getContainerSize = (button) => {
