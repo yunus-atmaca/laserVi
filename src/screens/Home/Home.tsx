@@ -311,35 +311,61 @@ export default class Home extends React.PureComponent<any, any> {
             backgroundColor: '#141414'
           }}>
             <View style={{ flexDirection: 'row', height: 72 }}>
-              <View style={styles.buttonContainer}>
-                <TouchableWithoutFeedback onPress={this._textClicked}>
-                  <View style={[styles.button, {
-                    width: this._getContainerSize(VIEW.TEXT),
-                    height: this._getContainerSize(VIEW.TEXT),
-                    backgroundColor: '#bfbfbf',
-                  }]}>
-                    <MaterialCommunityIcons
-                      name={'format-text'}
-                      size={this._getButtonSize(VIEW.TEXT)}
-                      color={'black'} />
-                  </View>
-                </TouchableWithoutFeedback>
+              <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  <TouchableWithoutFeedback onPress={this._textClicked}>
+                    <View style={[styles.button, {
+                      width: this._getContainerSize(VIEW.TEXT),
+                      height: this._getContainerSize(VIEW.TEXT),
+                      backgroundColor: '#bfbfbf',
+                    }]}>
+                      <MaterialCommunityIcons
+                        name={'format-text'}
+                        size={this._getButtonSize(VIEW.TEXT)}
+                        color={'black'} />
+                    </View>
+                  </TouchableWithoutFeedback>
+                </View>
+                <View style={{ flex: 3, paddingStart: 8 }}>
+                  <CustomizeText
+                    onRef={(ref) => { this.customizeTextRef = ref }}
+                    openBottomSheet={(info) => {
+                      this.bottomSheetInfo = info
+                      this.setState({ showBottomSheet: true })
+                    }} />
+                </View>
               </View>
-              <View style={styles.buttonContainer}>
-                <TouchableWithoutFeedback onPress={this._imageClicked}>
-                  <View style={[styles.button, {
-                    width: this._getContainerSize(VIEW.IMAGE),
-                    height: this._getContainerSize(VIEW.IMAGE),
-                    backgroundColor: '#bfbfbf',
-                  }]}>
-                    <MaterialCommunityIcons
-                      name={'image-outline'}
-                      size={this._getButtonSize(VIEW.IMAGE)}
-                      color={'black'} />
-                  </View>
-                </TouchableWithoutFeedback>
+              <View style={{
+                backgroundColor: '#bfbfbf',
+                width: 1,
+                height: '100%',
+              }} />
+              <View style={{ flex: 1, flexDirection: 'row', paddingStart: 6 }}>
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                  <TouchableWithoutFeedback onPress={this._imageClicked}>
+                    <View style={[styles.button, {
+                      width: this._getContainerSize(VIEW.IMAGE),
+                      height: this._getContainerSize(VIEW.IMAGE),
+                      backgroundColor: '#bfbfbf',
+                    }]}>
+                      <MaterialCommunityIcons
+                        name={'image-outline'}
+                        size={this._getButtonSize(VIEW.IMAGE)}
+                        color={'black'} />
+                    </View>
+                  </TouchableWithoutFeedback>
+                </View>
+                <View style={{ flex: 3, paddingStart: 8 }}>
+
+                </View>
               </View>
             </View>
+            <View style={{
+              backgroundColor: '#FF9900',
+              width: '100%',
+              height: 1,
+              marginTop: 8
+            }} />
             {
               this.state.viewsInfo.length > 0 && (
                 <View>
@@ -347,15 +373,17 @@ export default class Home extends React.PureComponent<any, any> {
                     color: 'white',
                     fontSize: 18,
                     fontFamily: 'Roboto-Regular',
+                    marginVertical: 8
                   }}>
                     Views
                   </Text>
-                  <View style={{
+                  {/*<View style={{
                     backgroundColor: '#bfbfbf',
                     width: '100%',
                     height: 1,
-                    marginTop: 4
-                  }} />
+                    marginTop: 4,
+                    marginBottom: 8,
+                  }} />*/}
                   {
                     this.state.viewsInfo.map(view => {
                       return (
@@ -364,16 +392,6 @@ export default class Home extends React.PureComponent<any, any> {
                     })
                   }
                 </View>
-              )
-            }
-            {
-              this.state.selectedButton === VIEW.TEXT && (
-                <CustomizeText
-                  onRef={(ref) => { this.customizeTextRef = ref }}
-                  openBottomSheet={(info) => {
-                    this.bottomSheetInfo = info
-                    this.setState({ showBottomSheet: true })
-                  }} />
               )
             }
           </View>
@@ -408,6 +426,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row'
   },
   textInput: {
     paddingTop: 0,

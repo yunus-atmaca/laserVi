@@ -7,6 +7,7 @@ import {
 } from 'react-native'
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import { fonts, getStyles, size } from '../utils/CustomizeText'
 
@@ -87,40 +88,29 @@ class CustomizeText extends React.Component<any, any>{
 
   render() {
     return (
-      <View>
-        <Text style={styles.header}>
-          Customize
-        </Text>
-        <View style={{
-          backgroundColor: '#bfbfbf',
-          width: '100%',
-          height: 1,
-          marginTop: 4
-        }} />
-
+      <View style={{ paddingEnd: 6 }}>
         <TouchableWithoutFeedback onPress={this._fontClicked}>
           <View style={{
             flexDirection: 'row',
             alignItems: 'center',
-            height: 32,
+            height: 24,
             width: '100%',
           }}>
-            <Text style={styles.textSectionLeft}>
-              Font:
-          </Text>
-            <Text style={styles.textSectionRight}>
-              {this.state.selectedFont}
-            </Text>
-            <View style={{
-              height: 32,
-              width: 32,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons name={'format-font'} size={14} color={'#bfbfbf'} />
+            </View>
+            <View style={{ flex: 5, paddingHorizontal: 2 }}>
+              <Text numberOfLines={1}
+                ellipsizeMode={'tail'}
+                style={styles.textSectionRight}>
+                {this.state.selectedFont}
+              </Text>
+            </View>
+            <View style={styles.iconContainer}>
               <MaterialIcons
                 name={'keyboard-arrow-down'}
-                color={'white'}
-                size={24}
+                color={'#bfbfbf'}
+                size={18}
               />
             </View>
           </View>
@@ -129,25 +119,24 @@ class CustomizeText extends React.Component<any, any>{
           <View style={{
             flexDirection: 'row',
             alignItems: 'center',
-            height: 32,
+            height: 24,
             width: '100%',
           }}>
-            <Text style={styles.textSectionLeft}>
-              Style:
-          </Text>
-            <Text style={styles.textSectionRight}>
-              {this.state.selectedStyle}
-            </Text>
-            <View style={{
-              height: 32,
-              width: 32,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons name={'format-line-style'} size={14} color={'#bfbfbf'} />
+            </View>
+            <View style={{ flex: 5, paddingHorizontal: 2 }}>
+              <Text numberOfLines={1}
+                ellipsizeMode={'tail'}
+                style={styles.textSectionRight}>
+                {this.state.selectedStyle}
+              </Text>
+            </View>
+            <View style={styles.iconContainer}>
               <MaterialIcons
                 name={'keyboard-arrow-down'}
                 color={'white'}
-                size={24}
+                size={18}
               />
             </View>
           </View>
@@ -156,25 +145,24 @@ class CustomizeText extends React.Component<any, any>{
           <View style={{
             flexDirection: 'row',
             alignItems: 'center',
-            height: 32,
+            height: 24,
             width: '100%',
           }}>
-            <Text style={styles.textSectionLeft}>
-              Size:
-            </Text>
-            <Text style={styles.textSectionRight}>
-              {this.state.selectedSize}
-            </Text>
-            <View style={{
-              height: 32,
-              width: 32,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
+            <View style={styles.iconContainer}>
+              <MaterialCommunityIcons name={'format-size'} size={14} color={'#bfbfbf'} />
+            </View>
+            <View style={{ flex: 5, paddingHorizontal: 2 }}>
+              <Text numberOfLines={1}
+                ellipsizeMode={'tail'}
+                style={styles.textSectionRight}>
+                {this.state.selectedSize}
+              </Text>
+            </View>
+            <View style={styles.iconContainer}>
               <MaterialIcons
                 name={'keyboard-arrow-down'}
                 color={'white'}
-                size={24}
+                size={18}
               />
             </View>
           </View>
@@ -185,22 +173,23 @@ class CustomizeText extends React.Component<any, any>{
 }
 
 const styles = StyleSheet.create({
-  header: {
-    color: 'white',
-    fontSize: 18,
-    fontFamily: 'Roboto-Regular',
-  },
   textSectionLeft: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Roboto-Regular',
   },
   textSectionRight: {
     color: 'white',
-    fontSize: 16,
-    marginStart: 12,
+    fontSize: 14,
     fontFamily: 'Roboto-Regular',
   },
+  iconContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    maxHeight: 24,
+    maxWidth: 24,
+  }
 })
 
 export default CustomizeText
