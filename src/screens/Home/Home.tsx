@@ -336,7 +336,7 @@ export default class Home extends React.PureComponent<any, any> {
                 </View>
               </View>
               <View style={{
-                backgroundColor: '#bfbfbf',
+                backgroundColor: '#FF9900',
                 width: 1,
                 height: '100%',
               }} />
@@ -406,6 +406,8 @@ export default class Home extends React.PureComponent<any, any> {
                 this.setState({ showBottomSheet: false })
               }}
               selectedData={(which, data) => {
+                //console.log(which)
+                //console.debug(data)
                 this.customizeTextRef._updateState(which, data)
               }}
             />

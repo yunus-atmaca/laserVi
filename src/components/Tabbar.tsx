@@ -1,6 +1,10 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
 
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+
+
 export default function Tabbar({ state, descriptors, navigation }) {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
 
@@ -41,11 +45,28 @@ export default function Tabbar({ state, descriptors, navigation }) {
         };
 
         const getTab = (label) => {
-          return (
-            <Text style={{ color: 'white' }}>
-              {label}
-            </Text>
-          )
+          if (label === 'Home') {
+            return (
+              <Ionicons
+                name={'color-palette-sharp'}
+                color={isFocused ? 'white' : '#bdc3c7'}
+                size={24} />
+            )
+          } else if (label === 'Discover') {
+            return (
+              <Ionicons
+                name={'search'}
+                color={isFocused ? 'white' : '#bdc3c7'}
+                size={24} />
+            )
+          } else {
+            return (
+              <Ionicons
+                name={'ios-heart'}
+                color={isFocused ? 'white' : '#bdc3c7'}
+                size={24} />
+            )
+          }
         }
         return (
           <TouchableOpacity
