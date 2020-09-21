@@ -12,6 +12,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import ViewShot, { captureRef } from "react-native-view-shot";
 
 import BottomSheetView from '../../components/BottomSheetView'
+import BottomSheetImages from '../../components/BottomSheetImages'
+
 import TextView from '../../components/TextView'
 import ViewInfo from '../../components/ViewInfo'
 import Header from '../../components/Header'
@@ -61,7 +63,8 @@ export default class Home extends React.PureComponent<any, any> {
       textInputView: false,
       showBottomSheet: false,
       views: [],
-      viewsInfo: []
+      viewsInfo: [],
+      showBottomSheetImages: false
     }
   }
 
@@ -129,11 +132,11 @@ export default class Home extends React.PureComponent<any, any> {
 
   _imageClicked = () => {
     if (this.state.selectedButton === VIEW.NONE) {
-      this.setState({ selectedButton: VIEW.IMAGE })
+      this.setState({ selectedButton: VIEW.IMAGE, showBottomSheetImages: true })
     } else {
       if (this.state.selectedButton === VIEW.TEXT) {
         this._checkViews()
-        this.setState({ selectedButton: VIEW.IMAGE })
+        this.setState({ selectedButton: VIEW.IMAGE, showBottomSheetImages: true })
       } else {
         this._checkViews()
         this.setState({ selectedButton: VIEW.NONE })
@@ -462,6 +465,16 @@ export default class Home extends React.PureComponent<any, any> {
                 //console.log(which)
                 //console.debug(data)
                 this.customizeTextRef._updateState(which, data)
+              }}
+            />
+          )
+        }
+        {
+          this.state.showBottomSheetImages && (
+            <BottomSheetImages
+              navigatedFrom={'Home'}
+              onCloseEnd={() => {
+                this.setState({ showBottomSheetImages: false, selectedButton: VIEW.NONE })
               }}
             />
           )

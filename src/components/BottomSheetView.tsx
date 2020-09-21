@@ -81,13 +81,6 @@ class BottomSheetView extends React.Component<any, any>{
       return this.props.font + '-Regular'
     }
   }
-  _renderSizes = (data) => {
-    return (
-      <View>
-
-      </View>
-    )
-  }
 
   _renderContent = () => {
     return (
