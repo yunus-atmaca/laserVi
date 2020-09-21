@@ -60,14 +60,6 @@ class ViewInfo extends React.PureComponent<any, any> {
                   justifyContent: 'center',
                   alignItems: 'center'
                 }}>
-                  <MaterialCommunityIcons name={'drag-variant'} size={18} color={'white'} />
-                </View>
-                <View style={{
-                  height: 24,
-                  width: 24,
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}>
                   <MaterialCommunityIcons name={'check-circle'} size={18} color={'green'} />
                 </View>
                 <View style={{

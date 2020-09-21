@@ -5,9 +5,9 @@ import {
   Dimensions,
   StyleSheet,
   TouchableWithoutFeedback,
-  TextInput
+  Keyboard
 } from 'react-native'
-import { ScrollView, } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ViewShot, { captureRef } from "react-native-view-shot";
 
@@ -98,18 +98,15 @@ export default class Home extends React.PureComponent<any, any> {
         })
 
       } else {
-        this.viewsRef[this.selectedView.id]._setState(
+        /*this.viewsRef[this.selectedView.id]._setState(
           {
             top: event.nativeEvent.locationY,
             left: event.nativeEvent.locationX
           }
-        )
+        )*/
 
-        //let index = this._getIndexById(this.selectedView)
-        //if (index >= 0) {
-        this.viewsJSON[this.selectedView.index].view.top = event.nativeEvent.locationY;
-        this.viewsJSON[this.selectedView.index].view.left = event.nativeEvent.locationX;
-        //}
+        //this.viewsJSON[this.selectedView.index].view.top = event.nativeEvent.locationY;
+        // this.viewsJSON[this.selectedView.index].view.left = event.nativeEvent.locationX;
       }
     } else if (this.state.selectedButton === VIEW.IMAGE) {
 
@@ -157,6 +154,7 @@ export default class Home extends React.PureComponent<any, any> {
   }
   _checkViews = () => {
     for (let i = 0; i < this.viewsJSON.length; ++i) {
+      console.log(this.viewsJSON[i].view.saved)
       if (!this.viewsJSON[i].view.saved) {
         this._removeViewClicked(this.viewsJSON[i].id)
       }
@@ -255,7 +253,7 @@ export default class Home extends React.PureComponent<any, any> {
     }
 
     if (deletedIndex !== -1) {
-      if (this.numberOfCreatedViews !== 0) {
+      if (this.viewsJSON[deletedIndex].view.saved) {
         this.numberOfCreatedViews -= 1
       }
 
@@ -445,8 +443,9 @@ export default class Home extends React.PureComponent<any, any> {
               <Text style={{
                 color: 'white',
                 fontSize: 18,
-                fontWeight: 'bold'
-              }}>Start</Text>
+                fontWeight: 'bold',
+                fontFamily: 'Roboto-Regular',
+              }}>Preview</Text>
             </View>
           </TouchableWithoutFeedback>
         </ScrollView>
