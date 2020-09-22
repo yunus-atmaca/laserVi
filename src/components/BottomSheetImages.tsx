@@ -5,23 +5,30 @@ import Discover from '../screens/Discover/Discover'
 
 const { width, height } = Dimensions.get('window')
 
-class BottomSheetView extends React.Component<any, any>{
+class BottomSheetImages extends React.Component<any, any>{
   bottomSheetRef: any
-  navigatedFrom: any
 
   constructor(props) {
     super(props)
-
-    this.navigatedFrom = this.props.navigatedFrom
   }
+
+  _imageClicked = (image) => {
+    //console.debug(image)
+    this.props.onImageSelected(image)
+    this.bottomSheetRef.snapTo(1)
+  }
+
   _renderContent = () => {
     return (
       <View
         style={{
-          height: height - 96,
+          height: height - 128,
           width: width,
         }}>
-        <Discover navigatedFrom={this.props.navigatedFrom} />
+        <Discover
+          imageClicked={this._imageClicked}
+          navigatedFrom={'Home'}
+        />
       </View>
     )
   }
@@ -32,7 +39,7 @@ class BottomSheetView extends React.Component<any, any>{
         ref={(ref) => {
           this.bottomSheetRef = ref
         }}
-        snapPoints={[height - 96, 0, 0]}
+        snapPoints={[height - 128, 0, 0]}
         borderRadius={10}
         renderContent={this._renderContent}
         onCloseEnd={this.props.onCloseEnd}
@@ -41,4 +48,4 @@ class BottomSheetView extends React.Component<any, any>{
   }
 }
 
-export default BottomSheetView
+export default BottomSheetImages

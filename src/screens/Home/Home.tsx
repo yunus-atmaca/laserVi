@@ -9,13 +9,15 @@ import {
 } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import ViewShot, { captureRef } from "react-native-view-shot";
+import { captureRef } from "react-native-view-shot";
 
 import BottomSheetView from '../../components/BottomSheetView'
 import BottomSheetImages from '../../components/BottomSheetImages'
 
 import TextView from '../../components/TextView'
 import ViewInfo from '../../components/ViewInfo'
+import ImageView from '../../components/ImageView'
+
 import Header from '../../components/Header'
 import UUID from '../../utils/UUID'
 
@@ -43,6 +45,8 @@ export default class Home extends React.PureComponent<any, any> {
   viewsJSON: any
 
   selectedView: any
+
+  selectedImageInfo: any
   constructor(props) {
     super(props)
 
@@ -64,11 +68,16 @@ export default class Home extends React.PureComponent<any, any> {
       showBottomSheet: false,
       views: [],
       viewsInfo: [],
-      showBottomSheetImages: false
+      showBottomSheetImages: false,
+      showHelperText: false
     }
   }
 
   _panelClicked = (event) => {
+    if (this.state.showHelperText) {
+      this.setState({ showHelperText: false })
+    }
+
     if (this.state.selectedButton === VIEW.NONE) {
       console.debug('NOTHING SELECTED')
     } else if (this.state.selectedButton === VIEW.TEXT) {
@@ -112,20 +121,47 @@ export default class Home extends React.PureComponent<any, any> {
         // this.viewsJSON[this.selectedView.index].view.left = event.nativeEvent.locationX;
       }
     } else if (this.state.selectedButton === VIEW.IMAGE) {
+      if (this.state.views.length === this.numberOfCreatedViews) {
+        let id = UUID()
 
+        let ImageInfo = {
+          id: id,
+          type: VIEW.IMAGE,
+          view: {
+            top: event.nativeEvent.locationY,
+            left: event.nativeEvent.locationX,
+            selected: true,
+            saved: false,
+            image: this.selectedImageInfo,
+          }
+        }
+
+        this.viewsJSON.push(ImageInfo)
+        this.setState({
+          views: this.state.views.concat([this._createImageView(ImageInfo)]),
+          viewsInfo: this.state.viewsInfo.concat([this._createViewInfo(ImageInfo)]),
+        }, () => {
+          this._setSelectedView({
+            index: this.numberOfCreatedViews,
+            id: id
+          });
+        })
+      } else {
+
+      }
     }
   }
 
   _textClicked = () => {
     if (this.state.selectedButton === VIEW.NONE) {
-      this.setState({ selectedButton: VIEW.TEXT })
+      this.setState({ selectedButton: VIEW.TEXT, showHelperText: true })
     } else {
       if (this.state.selectedButton === VIEW.IMAGE) {
         this._checkViews()
-        this.setState({ selectedButton: VIEW.TEXT })
+        this.setState({ selectedButton: VIEW.TEXT, showHelperText: true })
       } else {
         this._checkViews()
-        this.setState({ selectedButton: VIEW.NONE })
+        this.setState({ selectedButton: VIEW.NONE, showHelperText: false })
       }
     }
   }
@@ -205,7 +241,24 @@ export default class Home extends React.PureComponent<any, any> {
   }
 
   _createImageView = (props) => {
-
+    return (
+      <ImageView
+        key={props.id}
+        id={props.id}
+        index={props.index}
+        onRef={(ref) => {
+          this.viewsRef[props.id] = ref
+        }}
+        selected={props.view.selected}
+        image={props.view.image}
+        saved={props.view.saved}
+        top={props.view.top}
+        left={props.view.left}
+        saveViewClicked={this._saveViewClicked}
+        removeViewClicked={this._removeViewClicked}
+        onFocus={this._onFocusView}
+      />
+    )
   }
 
   _createTextView = (props) => {
@@ -318,6 +371,27 @@ export default class Home extends React.PureComponent<any, any> {
               }}
               style={{ width: width, height: width, backgroundColor: 'white' }}>
               {
+                this.state.showHelperText && (
+                  <View style={{
+                    flex: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                    <Text style={{
+                      color: 'rgba(128,128,128, .7)',
+                      fontSize: 24,
+                      marginHorizontal: 48,
+                      textAlign: 'center',
+                      fontFamily: 'KronaOne-Regular'
+                    }}>
+                      {this.state.selectedButton === VIEW.TEXT ?
+                        'Tab to add text' : 'Tab to add selectedImage image'
+                      }
+                    </Text>
+                  </View>
+                )
+              }
+              {
                 this.state.views.length > 0 && (
                   this.state.views.map(view => {
                     return (
@@ -380,7 +454,7 @@ export default class Home extends React.PureComponent<any, any> {
                   </TouchableWithoutFeedback>
                 </View>
                 <View style={{ flex: 3, paddingStart: 8 }}>
-
+                  {/*Image*/}
                 </View>
               </View>
             </View>
@@ -472,9 +546,13 @@ export default class Home extends React.PureComponent<any, any> {
         {
           this.state.showBottomSheetImages && (
             <BottomSheetImages
-              navigatedFrom={'Home'}
+              onImageSelected={(image) => {
+                console.debug(image)
+                this.selectedImageInfo = image
+                this.setState({ showHelperText: true })
+              }}
               onCloseEnd={() => {
-                this.setState({ showBottomSheetImages: false, selectedButton: VIEW.NONE })
+                this.setState({ showBottomSheetImages: false })
               }}
             />
           )

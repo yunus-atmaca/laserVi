@@ -32,21 +32,28 @@ export default class Discover extends React.Component<any, any>{
       }} />;
     }
     return (
-      <View style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
-        width: (width - 24) / 3,
-        height: 144,
-        marginTop: 12,
-        backgroundColor: 'white',
-        marginHorizontal: 4,
-        borderRadius: 8
-      }}>
-        <Image source={data.item.source} resizeMode={'contain'}
-          style={{ height: 144, width: (width - 24) / 3 }}
-        />
-      </View >
+      <TouchableOpacity
+        onPress={() => {
+          if (this.navigatedFrom === 'Home') {
+            this.props.imageClicked(data.item);
+          }
+        }}>
+        <View style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          flex: 1,
+          width: (width - 24) / 3,
+          height: 144,
+          marginTop: 12,
+          backgroundColor: 'white',
+          marginHorizontal: 4,
+          borderRadius: 8
+        }}>
+          <Image source={data.item.source} resizeMode={'contain'}
+            style={{ height: 144, width: (width - 24) / 3 }}
+          />
+        </View>
+      </TouchableOpacity>
     );
   }
 
