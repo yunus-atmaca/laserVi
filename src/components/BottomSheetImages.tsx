@@ -12,6 +12,14 @@ class BottomSheetImages extends React.Component<any, any>{
     super(props)
   }
 
+  componentDidMount() {
+    this.props.onRef({ _snapTo: (index) => { this.bottomSheetRef.snapTo(index) } })
+  }
+
+  componentWillUnmount() {
+    this.props.onRef({ _snapTo: null })
+  }
+
   _imageClicked = (image) => {
     //console.debug(image)
     this.props.onImageSelected(image)

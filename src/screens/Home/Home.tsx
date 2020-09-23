@@ -37,6 +37,7 @@ export default class Home extends React.PureComponent<any, any> {
   viewsRef: any
   viewsInfoRef: any
   panelRef: any
+  bottomSheetImgRef: any
 
   bottomSheetInfo: any
 
@@ -54,6 +55,8 @@ export default class Home extends React.PureComponent<any, any> {
       index: -1,
       id: ''
     }
+
+    this.selectedImageInfo = false
 
     this.numberOfCreatedViews = 0
 
@@ -168,14 +171,25 @@ export default class Home extends React.PureComponent<any, any> {
 
   _imageClicked = () => {
     if (this.state.selectedButton === VIEW.NONE) {
-      this.setState({ selectedButton: VIEW.IMAGE, showBottomSheetImages: true })
+      if (this.state.showBottomSheetImages) {
+        this.setState({ selectedButton: VIEW.IMAGE })
+        this.bottomSheetImgRef._snapTo(0)
+      } else {
+        this.setState({ selectedButton: VIEW.IMAGE, showBottomSheetImages: true })
+      }
     } else {
       if (this.state.selectedButton === VIEW.TEXT) {
         this._checkViews()
-        this.setState({ selectedButton: VIEW.IMAGE, showBottomSheetImages: true })
+        if (this.state.showBottomSheetImages) {
+          this.setState({ selectedButton: VIEW.IMAGE })
+          this.bottomSheetImgRef._snapTo(0)
+        } else {
+          this.setState({ selectedButton: VIEW.IMAGE, showBottomSheetImages: true })
+        }
       } else {
+        this.selectedImageInfo = false
         this._checkViews()
-        this.setState({ selectedButton: VIEW.NONE })
+        this.setState({ selectedButton: VIEW.NONE, showHelperText: false })
       }
     }
   }
@@ -354,11 +368,11 @@ export default class Home extends React.PureComponent<any, any> {
   }
 
   _getContainerSize = (button) => {
-    return button === this.state.selectedButton ? 32 : 36
+    return button === this.state.selectedButton ? 28 : 36
   }
 
   _getButtonSize = (button) => {
-    return button === this.state.selectedButton ? 28 : 32
+    return button === this.state.selectedButton ? 24 : 32
   }
 
   render() {
@@ -391,7 +405,7 @@ export default class Home extends React.PureComponent<any, any> {
                       fontFamily: 'KronaOne-Regular'
                     }}>
                       {this.state.selectedButton === VIEW.TEXT ?
-                        'Tab to add text' : 'Tab to add selectedImage image'
+                        'Tab to add text' : 'Tab to add selected image'
                       }
                     </Text>
                   </View>
@@ -473,21 +487,44 @@ export default class Home extends React.PureComponent<any, any> {
             {
               this.state.viewsInfo.length > 0 && (
                 <View>
-                  <Text style={{
-                    color: 'white',
-                    fontSize: 18,
-                    fontFamily: 'Roboto-Regular',
-                    marginVertical: 8
-                  }}>
-                    Views
-                  </Text>
-                  {/*<View style={{
-                    backgroundColor: '#bfbfbf',
+                  <View style={{
+                    marginVertical: 8,
+                    justifyContent: 'space-between',
                     width: '100%',
-                    height: 1,
-                    marginTop: 4,
-                    marginBottom: 8,
-                  }} />*/}
+                    flexDirection: 'row',
+                  }}>
+                    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                      <Text style={{
+                        color: 'white',
+                        fontSize: 18,
+                        fontFamily: 'Roboto-Regular',
+                      }}>
+                        Views
+                      </Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                      <TouchableOpacity>
+                        <View style={{
+                          height: 32,
+                          width: 32,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                          <MaterialCommunityIcons name={'check-circle'} size={25} color={'green'} />
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity>
+                        <View style={{
+                          height: 32,
+                          width: 32,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                          <MaterialCommunityIcons name={'close-circle'} size={25} color={'red'} />
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
                   {
                     this.state.viewsInfo.map(view => {
                       return (
@@ -565,12 +602,18 @@ export default class Home extends React.PureComponent<any, any> {
         {
           this.state.showBottomSheetImages && (
             <BottomSheetImages
+              onRef={(ref) => {
+                this.bottomSheetImgRef = ref
+              }}
               onImageSelected={(image) => {
                 this.selectedImageInfo = image
                 this.setState({ showHelperText: true })
               }}
               onCloseEnd={() => {
-                this.setState({ showBottomSheetImages: false })
+                if (!this.selectedImageInfo) {
+                  this.setState({ selectedButton: VIEW.NONE })
+                }
+                //this.setState({ showBottomSheetImages: false })
               }}
             />
           )

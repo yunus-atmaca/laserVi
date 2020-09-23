@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableWithoutFeedback } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 class ViewInfo extends React.PureComponent<any, any> {
@@ -27,7 +27,7 @@ class ViewInfo extends React.PureComponent<any, any> {
 
   render() {
     return (
-      <TouchableOpacity onPress={() => {
+      <TouchableWithoutFeedback onPress={() => {
         this.props.onFocus(this.props.id)
       }}>
         <View style={{
@@ -36,9 +36,41 @@ class ViewInfo extends React.PureComponent<any, any> {
           backgroundColor: this.state.selected ? '#82521b' : 'transparent'
         }}>
           <View style={{ flexDirection: 'row' }}>
+            {
+              this.props.type === 'text' ?
+                (
+                  <View style={{
+                    height: 28,
+                    width: 28,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
+                    <MaterialCommunityIcons
+                      name={'format-text'}
+                      size={24}
+                      color={'white'} />
+                  </View>
+                )
+                :
+                (
+                  <View style={{
+                    height: 28,
+                    width: 28,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
+                    <MaterialCommunityIcons
+                      name={'image-outline'}
+                      size={24}
+                      color={'white'} />
+                  </View>
+                )
+
+            }
             <View style={{
-              flex: 5,
+              marginStart: 12,
               justifyContent: 'center',
+              alignItems: 'center'
             }}>
               <Text
                 ellipsizeMode={'tail'}
@@ -49,32 +81,12 @@ class ViewInfo extends React.PureComponent<any, any> {
                   fontSize: 14,
                   fontFamily: 'Roboto-Regular'
                 }}>
-                {this.props.type === 'text' ? 'Text' : 'Image'}   `{this.state.name}`
+                ` {this.state.name} `
               </Text>
-            </View>
-            <View style={{ flex: 2 }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                <View style={{
-                  height: 24,
-                  width: 24,
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}>
-                  <MaterialCommunityIcons name={'check-circle'} size={18} color={'green'} />
-                </View>
-                <View style={{
-                  height: 24,
-                  width: 24,
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}>
-                  <MaterialCommunityIcons name={'close-circle'} size={18} color={'red'} />
-                </View>
-              </View>
             </View>
           </View>
         </View>
-      </TouchableOpacity>
+      </TouchableWithoutFeedback>
     )
   }
 }
