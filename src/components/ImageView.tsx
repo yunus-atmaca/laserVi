@@ -49,15 +49,23 @@ class ImageView extends React.PureComponent<any, any> {
   }
 
   componentDidMount() {
-    this.props.onRef({ _setState: this._setState })
+    this.props.onRef({ _setState: this._setState, _setSelected: this._setSelected })
   }
 
   componentWillUnmount() {
-    this.props.onRef({ _setState: null })
+    this.props.onRef({ _setState: null, _setSelected: null })
   }
 
   _setState = (state) => {
     this.setState(state)
+  }
+
+  _setSelected = (callback) => {
+    if (this.state.selected) {
+      this.setState({ selected: false }, () => {
+        callback()
+      })
+    }
   }
 
   render() {
@@ -80,7 +88,6 @@ class ImageView extends React.PureComponent<any, any> {
           borderColor: 'blue',
         }}>
           <TouchableWithoutFeedback onPress={() => {
-            console.log('ON FOCUS IMAGE')
             Keyboard.dismiss()
             this.props.onFocus(this.props.id)
           }}>
@@ -108,13 +115,11 @@ class ImageView extends React.PureComponent<any, any> {
                     this.setState({ saved: true })
                     this.props.saveViewClicked({
                       id: this.props.id,
-                      type: 'text',
+                      type: 'image',
                       view: {
                         selected: this.state.selected,
                         saved: true,
-                        text: this.state.text,
-                        fontSize: this.state.fontSize,
-                        fontFamily: this.state.fontFamily,
+                        image: this.props.image,
                         top: this.state.top,
                         left: this.state.left,
                       }

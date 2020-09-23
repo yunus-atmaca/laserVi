@@ -12,6 +12,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 class TextView extends React.PureComponent<any, any> {
 
   panResponder: any
+  textInputRef: any
   constructor(props) {
     super(props)
 
@@ -74,15 +75,24 @@ class TextView extends React.PureComponent<any, any> {
   }
 
   componentDidMount() {
-    this.props.onRef({ _setState: this._setState })
+    this.props.onRef({ _setState: this._setState, _setSelected: this._setSelected })
   }
 
   componentWillUnmount() {
-    this.props.onRef({ _setState: null })
+    this.props.onRef({ _setState: null, _setSelected: null })
   }
 
   _setState = (state) => {
     this.setState(state)
+  }
+
+  _setSelected = (callback) => {
+    this.textInputRef.blur()
+    if (this.state.selected) {
+      this.setState({ selected: false }, () => {
+        callback()
+      })
+    }
   }
 
   render() {
@@ -117,6 +127,9 @@ class TextView extends React.PureComponent<any, any> {
           borderColor: 'blue',
         }}>
           <TextInput
+            ref={(ref) => {
+              this.textInputRef = ref
+            }}
             onChangeText={(text) => {
               this.setState({ text: text })
               this.props.onTextChange(this.props.id, text)
@@ -124,7 +137,6 @@ class TextView extends React.PureComponent<any, any> {
             value={this.state.text}
             autoFocus={true}
             onFocus={() => {
-              console.log('ON FOCUS TEXT')
               this.props.onFocus(this.props.id)
             }}
             style={{

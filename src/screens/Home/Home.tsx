@@ -7,7 +7,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard
 } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { captureRef } from "react-native-view-shot";
 
@@ -193,7 +193,6 @@ export default class Home extends React.PureComponent<any, any> {
   }
   _checkViews = () => {
     for (let i = 0; i < this.viewsJSON.length; ++i) {
-      console.log(this.viewsJSON[i].view.saved)
       if (!this.viewsJSON[i].view.saved) {
         this._removeViewClicked(this.viewsJSON[i].id)
       }
@@ -230,7 +229,7 @@ export default class Home extends React.PureComponent<any, any> {
           this.viewsInfoRef[props.id] = ref
         }}
         selected={props.view.selected}
-        name={props.view.text}
+        name={props.type === VIEW.TEXT ? props.view.text : props.view.image.title}
         saved={props.view.saved}
         type={props.type}
         saveViewClicked={this._saveViewClicked}
@@ -289,13 +288,20 @@ export default class Home extends React.PureComponent<any, any> {
     this.numberOfCreatedViews += 1
     let index = this._getIndexById(props.id)
     if (index >= 0) {
-      this.viewsJSON[index].view.selected = props.view.selected
-      this.viewsJSON[index].view.saved = props.view.saved
-      this.viewsJSON[index].view.text = props.view.text
-      this.viewsJSON[index].view.fontSize = props.view.fontSize
-      this.viewsJSON[index].view.fontFamily = props.view.fontFamily
-      this.viewsJSON[index].view.top = props.view.top
-      this.viewsJSON[index].view.left = props.view.left
+      if (props.type === 'text') {
+        this.viewsJSON[index].view.selected = props.view.selected
+        this.viewsJSON[index].view.saved = props.view.saved
+        this.viewsJSON[index].view.text = props.view.text
+        this.viewsJSON[index].view.fontSize = props.view.fontSize
+        this.viewsJSON[index].view.fontFamily = props.view.fontFamily
+        this.viewsJSON[index].view.top = props.view.top
+        this.viewsJSON[index].view.left = props.view.left
+      } else {
+        this.viewsJSON[index].view.selected = props.view.selected
+        this.viewsJSON[index].view.saved = props.view.saved
+        this.viewsJSON[index].view.top = props.view.top
+        this.viewsJSON[index].view.left = props.view.left
+      }
     }
   }
 
@@ -493,19 +499,34 @@ export default class Home extends React.PureComponent<any, any> {
               )
             }
           </View>
-          <TouchableWithoutFeedback onPress={() => {
-            captureRef(this.panelRef, {
-              format: "jpg",
-              quality: 1
-            }).then(
-              uri => {
-                console.log("Image saved to", uri)
-                this.props.navigation.navigate('Preview', {
-                  uri: uri
-                })
-              },
-              error => console.error("Oops, snapshot failed", error)
-            );
+          <TouchableOpacity onPress={() => {
+            const preview = () => {
+              captureRef(this.panelRef, {
+                format: "jpg",
+                quality: 1
+              }).then(
+                uri => {
+                  console.log("Image saved to", uri)
+                  this.props.navigation.navigate('Preview', {
+                    uri: uri
+                  })
+                },
+                error => console.error("Oops, snapshot failed", error)
+              );
+            }
+
+            for (const [key, value] of Object.entries(this.viewsInfoRef)) {
+              if (this.viewsInfoRef[key]._setState !== null) {
+                this.viewsInfoRef[key]._setState({ selected: false })
+                //console.debug(this.viewsInfoRef[key])
+              }
+            }
+
+            for (const [key, value] of Object.entries(this.viewsRef)) {
+              if (this.viewsRef[key]._setSelected !== null) {
+                this.viewsRef[key]._setSelected(preview)
+              }
+            }
           }}>
             <View style={{
               height: 44,
@@ -524,7 +545,7 @@ export default class Home extends React.PureComponent<any, any> {
                 fontFamily: 'Roboto-Regular',
               }}>Preview</Text>
             </View>
-          </TouchableWithoutFeedback>
+          </TouchableOpacity>
         </ScrollView>
         {
           this.state.showBottomSheet && (
@@ -536,8 +557,6 @@ export default class Home extends React.PureComponent<any, any> {
                 this.setState({ showBottomSheet: false })
               }}
               selectedData={(which, data) => {
-                //console.log(which)
-                //console.debug(data)
                 this.customizeTextRef._updateState(which, data)
               }}
             />
@@ -547,7 +566,6 @@ export default class Home extends React.PureComponent<any, any> {
           this.state.showBottomSheetImages && (
             <BottomSheetImages
               onImageSelected={(image) => {
-                console.debug(image)
                 this.selectedImageInfo = image
                 this.setState({ showHelperText: true })
               }}
