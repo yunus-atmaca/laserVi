@@ -17,6 +17,7 @@ import BottomSheetImages from '../../components/BottomSheetImages'
 import TextView from '../../components/TextView'
 import ViewInfo from '../../components/ViewInfo'
 import ImageView from '../../components/ImageView'
+import TextSize from '../../components/TextSize'
 
 import Header from '../../components/Header'
 import UUID from '../../utils/UUID'
@@ -419,6 +420,27 @@ export default class Home extends React.PureComponent<any, any> {
                     )
                   })
                 )
+              }
+              {
+                <View style={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  width: 24,
+                  height: '100%',
+                  justifyContent: 'center',
+                }}>
+                  <View style={{
+                    backgroundColor: 'green',
+                    width: '100%',
+                    height: 150,
+                  }}>
+                    <TextSize onSizeChanged={(size) => {
+                      console.log(size)
+                    }} />
+                  </View>
+                </View>
               }
             </View>
           </TouchableWithoutFeedback>
