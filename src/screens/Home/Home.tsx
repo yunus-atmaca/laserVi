@@ -49,6 +49,9 @@ export default class Home extends React.PureComponent<any, any> {
   selectedView: any
 
   selectedImageInfo: any
+
+  currentTextSize: number
+  size: number
   constructor(props) {
     super(props)
 
@@ -60,6 +63,8 @@ export default class Home extends React.PureComponent<any, any> {
     this.selectedImageInfo = false
 
     this.numberOfCreatedViews = 0
+    this.currentTextSize = 12
+    this.size = 0
 
     this.viewsJSON = []
 
@@ -300,6 +305,7 @@ export default class Home extends React.PureComponent<any, any> {
   }
 
   _saveViewClicked = (props) => {
+    this.setState({ selectedButton: VIEW.NONE })
     this.numberOfCreatedViews += 1
     let index = this._getIndexById(props.id)
     if (index >= 0) {
@@ -393,11 +399,13 @@ export default class Home extends React.PureComponent<any, any> {
               style={{ width: width, height: width, backgroundColor: 'white' }}>
               {
                 this.state.showHelperText && (
-                  <View style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
+                  <View
+                    pointerEvents={'none'}
+                    style={{
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
                     <Text style={{
                       color: 'rgba(128,128,128, .7)',
                       fontSize: 24,
@@ -421,7 +429,7 @@ export default class Home extends React.PureComponent<any, any> {
                   })
                 )
               }
-              {
+              {/*
                 <View style={{
                   position: 'absolute',
                   top: 0,
@@ -432,16 +440,31 @@ export default class Home extends React.PureComponent<any, any> {
                   justifyContent: 'center',
                 }}>
                   <View style={{
-                    backgroundColor: 'green',
                     width: '100%',
                     height: 150,
                   }}>
-                    <TextSize onSizeChanged={(size) => {
-                      console.log(size)
-                    }} />
+                    <TextSize
+                      onSizeRelease={(size) => {
+
+                        this.currentTextSize += (-size / 5)
+
+                        this.currentTextSize = this.currentTextSize + (-size / 5) > 42 ?
+                          42 : this.currentTextSize + (-size / 5)
+
+
+                        console.debug(this.currentTextSize)
+                      }}
+                      onSizeChanged={(size) => {
+                        console.debug('onSizeChanged: ', size)
+
+                        this.viewsRef[this.selectedView.id]._setState({
+                          fontSize: this.currentTextSize + (-size / 5)
+                        })
+
+                      }} />
                   </View>
                 </View>
-              }
+                    */}
             </View>
           </TouchableWithoutFeedback>
           <View style={{

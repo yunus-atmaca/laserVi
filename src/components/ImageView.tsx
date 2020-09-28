@@ -132,19 +132,19 @@ class ImageView extends React.PureComponent<any, any> {
                   right: 0,
                 }}>
                 <View style={{
-                  height: 16,
-                  width: 16,
+                  height: 28,
+                  width: 28,
                   alignItems: 'center',
                   justifyContent: 'center'
                 }}>
                   {
                     this.state.saved ?
                       (
-                        <MaterialCommunityIcons name={'close-circle'} size={18} color={'red'} />
+                        <MaterialCommunityIcons name={'close-circle'} size={28} color={'red'} />
                       )
                       :
                       (
-                        <MaterialCommunityIcons name={'check-circle'} size={18} color={'green'} />
+                        <MaterialCommunityIcons name={'check-circle'} size={28} color={'green'} />
                       )
                   }
                 </View>

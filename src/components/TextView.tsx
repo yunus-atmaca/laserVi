@@ -9,13 +9,33 @@ import {
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-class TextView extends React.PureComponent<any, any> {
+interface TextViewProps {
+  key: string
+  id: string
+  index: number
+  onRef: Function
+  selected: boolean
+  saved: boolean
+  text: string
+  top: number
+  left: number
+  fontFamily: string
+  fontSize: number
+  saveViewClicked: Function
+  removeViewClicked: Function
+  onTextChange: Function
+  onFocus: Function
+}
+
+class TextView extends React.PureComponent<TextViewProps, any> {
 
   panResponder: any
   textInputRef: any
   constructor(props) {
     super(props)
 
+    console.log(this.props.top)
+    console.log(this.props.left)
     this.state = {
       selected: this.props.selected,
       saved: this.props.saved,

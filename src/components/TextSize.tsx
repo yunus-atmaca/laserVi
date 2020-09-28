@@ -3,16 +3,16 @@ import React from 'react'
 import {
   View,
   Animated,
-  PanResponder,
-  PanResponderInstance
+  PanResponder
 } from 'react-native'
 
 interface TextSizeProps {
-  onSizeChanged: Function
+  onSizeChanged: Function,
+  onSizeRelease: Function
 }
 
 class TextSize extends React.Component<TextSizeProps, any> {
-  panResponder: PanResponderInstance
+  panResponder: any
   lastDy: number
   constructor(props) {
     super(props)
@@ -30,12 +30,9 @@ class TextSize extends React.Component<TextSizeProps, any> {
           x: 0,
           y: this.lastDy
         });
-        this.state.pan.setValue({ x: 0, y: 0 })
       },
 
       onPanResponderMove: (e, gestureState) => {
-
-        //console.log(gestureState.dy)
         let value = ((this.lastDy + gestureState.dy) <= 0 &&
           (this.lastDy + gestureState.dy) >= -150)
           ? Animated.event([
@@ -44,10 +41,16 @@ class TextSize extends React.Component<TextSizeProps, any> {
           : null
 
 
-        //console.debug(Math.abs(Math.round(this.state.pan.y._value / 10)))
+        //console.debug(Math.max(this.state.pan.y._value, -150))
 
-        this.props.onSizeChanged(
-          Math.abs(Math.round(this.state.pan.y._value / 10)))
+
+        this.props.onSizeChanged(this.state.pan.y._value < -150 ? -150 : this.state.pan.y._value)
+
+        /*this.props.onSizeChanged(
+          Math.abs(
+            Math.floor(
+              Math.max(this.state.pan.y._value, -150) / 5)),
+          Math.max(this.state.pan.y._value, -150) > 0 ? 'down' : 'up')*/
         /*if (Math.floor(this.state.pan.y / 10)) {
 
         }*/
@@ -58,6 +61,9 @@ class TextSize extends React.Component<TextSizeProps, any> {
         return value;
       },
       onPanResponderRelease: (e, gestureState) => {
+        //console.debug('onPanResponderRelease')
+        //console.debug(this.state.pan.y._value < -150 ? -150 : this.state.pan.y._value)
+        this.props.onSizeRelease(this.state.pan.y._value < -150 ? -150 : this.state.pan.y._value)
         this.lastDy += gestureState.dy
 
         this.lastDy = this.lastDy >= 0 ? 0 : this.lastDy
