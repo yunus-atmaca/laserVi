@@ -51,20 +51,19 @@ export default class Home extends React.PureComponent<any, any> {
   selectedImageInfo: any
 
   currentTextSize: number
-  size: number
   constructor(props) {
     super(props)
 
     this.selectedView = {
       index: -1,
-      id: ''
+      id: '',
+      type: VIEW.NONE
     }
 
     this.selectedImageInfo = false
 
     this.numberOfCreatedViews = 0
     this.currentTextSize = 12
-    this.size = 0
 
     this.viewsJSON = []
 
@@ -78,7 +77,8 @@ export default class Home extends React.PureComponent<any, any> {
       views: [],
       viewsInfo: [],
       showBottomSheetImages: false,
-      showHelperText: false
+      showHelperText: false,
+      isSelectedViewText: false
     }
   }
 
@@ -114,7 +114,8 @@ export default class Home extends React.PureComponent<any, any> {
         }, () => {
           this._setSelectedView({
             index: this.numberOfCreatedViews,
-            id: id
+            id: id,
+            type: VIEW.TEXT
           });
         })
 
@@ -152,7 +153,8 @@ export default class Home extends React.PureComponent<any, any> {
         }, () => {
           this._setSelectedView({
             index: this.numberOfCreatedViews,
-            id: id
+            id: id,
+            type: VIEW.IMAGE
           });
         })
       } else {
@@ -223,7 +225,7 @@ export default class Home extends React.PureComponent<any, any> {
     if (this.selectedView.index !== -1) {
       if (view.id !== this.selectedView.id) {
         //console.debug('FALSE: ' + view.id + ' | | ' + this.selectedView.id)
-        this.viewsRef[this.selectedView.id]._setState({ selected: false })
+        this.viewsRef[this.selectedView.id]._setSelected(null, false)
         this.viewsInfoRef[this.selectedView.id]._setState({ selected: false })
         this.viewsJSON[this.selectedView.index].view.selected = false
       }
@@ -231,12 +233,17 @@ export default class Home extends React.PureComponent<any, any> {
 
     if (view.id !== this.selectedView.id) {
       //console.debug('TRUE: ' + view.id + ' | | ' + this.selectedView.id)
-      this.viewsRef[view.id]._setState({ selected: true })
+      this.viewsRef[view.id]._setSelected(null, true)
       this.viewsInfoRef[view.id]._setState({ selected: true })
       this.viewsJSON[view.index].view.selected = true
     }
 
     this.selectedView = view;
+    if (this.selectedView.type === VIEW.TEXT) {
+      this.setState({ isSelectedViewText: true })
+    } else {
+      this.setState({ isSelectedViewText: false })
+    }
   }
 
   _createViewInfo = (props) => {
@@ -370,8 +377,8 @@ export default class Home extends React.PureComponent<any, any> {
     }
   }
 
-  _onFocusView = (id) => {
-    this._setSelectedView({ id: id, index: this._getIndexById(id) })
+  _onFocusView = (id, type) => {
+    this._setSelectedView({ id: id, index: this._getIndexById(id), type: type })
   }
 
   _getContainerSize = (button) => {
@@ -429,7 +436,7 @@ export default class Home extends React.PureComponent<any, any> {
                   })
                 )
               }
-              {/*
+              {this.state.isSelectedViewText && (
                 <View style={{
                   position: 'absolute',
                   top: 0,
@@ -464,7 +471,7 @@ export default class Home extends React.PureComponent<any, any> {
                       }} />
                   </View>
                 </View>
-                    */}
+              )}
             </View>
           </TouchableWithoutFeedback>
           <View style={{
@@ -606,7 +613,7 @@ export default class Home extends React.PureComponent<any, any> {
 
             for (const [key, value] of Object.entries(this.viewsRef)) {
               if (this.viewsRef[key]._setSelected !== null) {
-                this.viewsRef[key]._setSelected(preview)
+                this.viewsRef[key]._setSelected(preview, false)
               }
             }
           }}>

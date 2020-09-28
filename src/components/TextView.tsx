@@ -106,11 +106,11 @@ class TextView extends React.PureComponent<TextViewProps, any> {
     this.setState(state)
   }
 
-  _setSelected = (callback) => {
+  _setSelected = (callback, selected) => {
     this.textInputRef.blur()
     if (this.state.selected) {
-      this.setState({ selected: false }, () => {
-        callback()
+      this.setState({ selected: selected }, () => {
+        callback && callback()
       })
     }
   }
@@ -157,7 +157,7 @@ class TextView extends React.PureComponent<TextViewProps, any> {
             value={this.state.text}
             autoFocus={true}
             onFocus={() => {
-              this.props.onFocus(this.props.id)
+              this.props.onFocus(this.props.id, 'text')
             }}
             style={{
               paddingTop: 0,

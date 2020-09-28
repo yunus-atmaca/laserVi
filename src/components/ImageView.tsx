@@ -60,9 +60,9 @@ class ImageView extends React.PureComponent<any, any> {
     this.setState(state)
   }
 
-  _setSelected = (callback) => {
+  _setSelected = (callback, selected) => {
     if (this.state.selected) {
-      this.setState({ selected: false }, () => {
+      this.setState({ selected: selected }, () => {
         callback()
       })
     }
@@ -89,7 +89,7 @@ class ImageView extends React.PureComponent<any, any> {
         }}>
           <TouchableWithoutFeedback onPress={() => {
             Keyboard.dismiss()
-            this.props.onFocus(this.props.id)
+            this.props.onFocus(this.props.id, 'image')
           }}>
             <View>
               <Image
