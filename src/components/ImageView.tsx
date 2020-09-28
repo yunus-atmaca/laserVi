@@ -6,8 +6,8 @@ import {
   PanResponder,
   Animated,
   Keyboard,
-  TouchableWithoutFeedback,
 } from 'react-native'
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 class ImageView extends React.PureComponent<any, any> {
@@ -29,10 +29,7 @@ class ImageView extends React.PureComponent<any, any> {
     }
 
     this.panResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (evt, gestureState) => false,
-      onStartShouldSetPanResponderCapture: (evt, gestureState) => false,
-      onMoveShouldSetPanResponder: (evt, gestureState) => true,
-      onMoveShouldSetPanResponderCapture: (evt, gestureState) => false,
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
       onPanResponderGrant: () => {
         this.state.pan.setOffset({
           x: this.state.pan.x._value,
@@ -63,7 +60,7 @@ class ImageView extends React.PureComponent<any, any> {
   _setSelected = (callback, selected) => {
     if (this.state.selected) {
       this.setState({ selected: selected }, () => {
-        callback()
+        callback && callback()
       })
     }
   }

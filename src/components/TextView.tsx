@@ -34,8 +34,6 @@ class TextView extends React.PureComponent<TextViewProps, any> {
   constructor(props) {
     super(props)
 
-    console.log(this.props.top)
-    console.log(this.props.left)
     this.state = {
       selected: this.props.selected,
       saved: this.props.saved,

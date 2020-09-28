@@ -472,6 +472,18 @@ export default class Home extends React.PureComponent<any, any> {
                   </View>
                 </View>
               )}
+              {
+                <View style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: 48,
+                  backgroundColor: 'red'
+                }}>
+
+                </View>
+              }
             </View>
           </TouchableWithoutFeedback>
           <View style={{
