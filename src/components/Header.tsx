@@ -7,7 +7,8 @@ export default function header(props) {
       height: 36,
       width: '100%',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      backgroundColor: props.backgroundColor
     }}>
       <Text style={{
         color: 'white',
