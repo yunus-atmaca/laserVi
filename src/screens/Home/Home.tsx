@@ -5,11 +5,12 @@ import {
   Dimensions,
   StyleSheet
 } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 
 import Header from '../../components/Header'
 import Button from '../../components/Button'
 import TextCustomization from '../../components/TextCustomization'
-import { ScrollView } from 'react-native-gesture-handler'
+import HelperText from '../../components/HelperText'
 
 const { width, height } = Dimensions.get('window')
 
@@ -28,7 +29,8 @@ class Home extends React.Component<HomeProps, any>{
     super(props)
 
     this.state = {
-      selectedButton: VIEW.TEXT
+      selectedButton: VIEW.TEXT,
+      showHelperText: true
     }
   }
 
@@ -46,12 +48,29 @@ class Home extends React.Component<HomeProps, any>{
         <ScrollView>
           <Header header={'Panel'} backgroundColor={'#141414'} />
           <View style={styles.panel}>
-
+            {
+              this.state.showHelperText && (
+                <HelperText
+                  selectedView={this.state.selectedButton}
+                />
+              )
+            }
           </View>
           <View style={styles.addingPanelContainer}>
-            <TextCustomization
-              height={styles.addingPanelContainer.height}
-            />
+            {
+              this.state.selectedButton === VIEW.TEXT ?
+                (
+                  <TextCustomization
+                    height={styles.addingPanelContainer.height}
+                  />
+                )
+                :
+                (
+                  <TextCustomization
+                    height={styles.addingPanelContainer.height}
+                  />
+                )
+            }
           </View>
           <View style={styles.buttonContainer}>
             <Button
