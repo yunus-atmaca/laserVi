@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { View, Text, TouchableWithoutFeedback } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 
-export default function fonts(props) {
+export default function customizeList(props) {
 
   const [selected, setSelected] = useState(0)
 
@@ -11,7 +11,13 @@ export default function fonts(props) {
       <TouchableWithoutFeedback onPress={() => {
         //console.debug(index)
         setSelected(index)
-        props.fontSelected(index, item)
+        if (props.navigatedFrom === 'fonts') {
+          props.fontSelected(index, item)
+        } else if (props.navigatedFrom === 'styles') {
+          props.styleSelected(index, item)
+        } else if (props.navigatedFrom === 'sizes') {
+          props.sizeSelected(index, item)
+        }
       }}>
         <View style={{
           backgroundColor: selected === index ? '#FF9900' : 'white',
@@ -51,8 +57,10 @@ export default function fonts(props) {
           }}>
             <Text style={{
               color: 'black',
-              fontSize: 24,
-              fontFamily: item + '-Regular'
+              fontSize: props.navigatedFrom === 'sizes' ? item : 24,
+              fontFamily: props.navigatedFrom === 'fonts' ? item + '-Regular' :
+                (props.navigatedFrom === 'styles' ? props.selectedFont + '-' + item :
+                  props.selectedFont + '-' + props.selectedStyle)
             }}>
               Preview
           </Text>

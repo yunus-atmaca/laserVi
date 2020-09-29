@@ -7,8 +7,9 @@ import {
 } from 'react-native'
 
 import TabView from './TabView/Pager'
-import FontsView from './Fonts'
-import { fonts } from '../utils/CustomizeText'
+import CustomizeList from './CustomizeList'
+
+import { fonts, getStyles, sizes } from '../utils/CustomizeText'
 
 const { width, height } = Dimensions.get('window')
 
@@ -19,10 +20,25 @@ interface TextCustomizationProps {
 class TextCustomization extends React.Component<TextCustomizationProps, any> {
   constructor(props) {
     super(props)
+
+    this.state = {
+      selectedFont: 'Roboto',
+      selectedStyle: 'Regular',
+      selectedSize: 14
+    }
   }
 
   _fontSelected = (index, font) => {
-    console.debug(index + ' | ' + font)
+    //console.debug(index + ' | ' + font)
+    this.setState({ selectedFont: font })
+  }
+
+  _styleSelected = (index, style) => {
+    this.setState({ selectedStyle: style })
+  }
+
+  _sizeSelected = (index, size) => {
+    this.setState({ selectedSize: size })
   }
 
   render() {
@@ -55,7 +71,8 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
             height: this.props.height - 32,
             backgroundColor: 'gray'
           }}>
-            <FontsView
+            <CustomizeList
+              navigatedFrom={'fonts'}
               fontSelected={this._fontSelected}
               data={fonts}
             />
@@ -63,16 +80,27 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
           <View style={{
             width: width,
             height: this.props.height - 32,
-            backgroundColor: 'blue'
+            backgroundColor: 'gray'
           }}>
-
+            <CustomizeList
+              navigatedFrom={'styles'}
+              selectedFont={this.state.selectedFont}
+              styleSelected={this._styleSelected}
+              data={getStyles(this.state.selectedFont)}
+            />
           </View>
           <View style={{
             width: width,
             height: this.props.height - 32,
-            backgroundColor: 'yellow'
+            backgroundColor: 'gray'
           }}>
-
+            <CustomizeList
+              navigatedFrom={'sizes'}
+              selectedFont={this.state.selectedFont}
+              selectedStyle={this.state.selectedStyle}
+              sizeSelected={this._sizeSelected}
+              data={sizes}
+            />
           </View>
         </TabView>
       </View>

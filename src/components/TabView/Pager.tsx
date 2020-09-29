@@ -196,6 +196,7 @@ class Pager extends React.Component<PagerProps, any>{
           )
         }
         <ScrollView
+          scrollEnabled={false}
           keyboardShouldPersistTaps={'handled'}
           nestedScrollEnabled={true}
           onLayout={this._onLayout}

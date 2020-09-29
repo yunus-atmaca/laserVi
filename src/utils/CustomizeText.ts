@@ -46,11 +46,7 @@ const regular = [
   'Regular',
 ]
 
-export const size = [
-  12,
-  13,
-  14,
-  15,
+export const sizes = [
   16,
   17,
   18,
@@ -60,6 +56,14 @@ export const size = [
   22,
   23,
   24,
+  25,
+  26,
+  27,
+  28,
+  29,
+  30,
+  31,
+  32
 ]
 
 
