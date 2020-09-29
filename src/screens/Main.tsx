@@ -1,5 +1,7 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { LogBox } from 'react-native'
+
+LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();

@@ -47,7 +47,9 @@ class Home extends React.Component<HomeProps, any>{
 
         </View>
         <View style={styles.addingPanelContainer}>
-          <TextCustomization />
+          <TextCustomization
+            height={styles.addingPanelContainer.height}
+          />
         </View>
         <View style={styles.buttonContainer}>
           <Button
@@ -79,9 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   addingPanelContainer: {
-    height: 108,
-    borderWidth: 1,
-    borderColor: 'red',
+    height: 150,
     width: width,
   },
   buttonContainer: {

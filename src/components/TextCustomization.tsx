@@ -3,129 +3,83 @@ import {
   View,
   StyleSheet,
   Dimensions,
-  Text, ViewComponent
+  Text,
 } from 'react-native'
 
-import { TabView, TabBar } from 'react-native-tab-view';
+import TabView from './TabView/Pager'
+import FontsView from './Fonts'
+import { fonts } from '../utils/CustomizeText'
+
+const { width, height } = Dimensions.get('window')
 
 interface TextCustomizationProps {
-
+  height: number
 }
-
-const initialLayout = { width: Dimensions.get('window').width };
 
 class TextCustomization extends React.Component<TextCustomizationProps, any> {
-
   constructor(props) {
     super(props)
-
-    this.state = {
-      index: 0,
-      routes: [
-        { key: 'tab1', title: 'Font' },
-        { key: 'tab2', title: 'Style' },
-        { key: 'tab3', title: 'Size' },
-      ]
-    }
   }
-  _renderTabBar = (props) => {
-    return (
-      <View>
-        <TabBar
-          {...props}
-          onTabPress={({ route, preventDefault }) => {
-          }}
-          style={{
-            backgroundColor: '',
-            height: 32,
-            width: '100%',
-          }}
-          renderLabel={this._renderLabel}
-          indicatorStyle={{ backgroundColor: '#141414' }}
-        />
-      </View>
-    );
-  };
 
-  _renderLabel = ({ route, focused }) => {
+  _fontSelected = (index, font) => {
+    console.debug(index + ' | ' + font)
+  }
+
+  render() {
     return (
       <View style={{
-        position: 'absolute',
-        top: -24,
-        height: 32,
-        width: Dimensions.get('window').width / 3,
-        backgroundColor: 'green',
-        alignItems: 'center',
-        justifyContent: 'center'
+        width: width,
+        height: this.props.height,
       }}>
-        <Text style={[{
-          fontSize: 14,
-          color: focused ? '#FF9900' : 'white'
-        }]}>
-          {route.title}
-        </Text>
+        <TabView
+          showsHorizontalScrollIndicator={false}
+          tabs={[
+            {
+              tab: 'Font',
+              index: 0
+            },
+            {
+              tab: 'Style',
+              index: 1
+            },
+            {
+              tab: 'Size',
+              index: 2
+            }
+          ]}
+          horizontal={true}
+          width={width}
+          height={this.props.height}>
+          <View style={{
+            width: width,
+            height: this.props.height - 32,
+            backgroundColor: 'gray'
+          }}>
+            <FontsView
+              fontSelected={this._fontSelected}
+              data={fonts}
+            />
+          </View>
+          <View style={{
+            width: width,
+            height: this.props.height - 32,
+            backgroundColor: 'blue'
+          }}>
+
+          </View>
+          <View style={{
+            width: width,
+            height: this.props.height - 32,
+            backgroundColor: 'yellow'
+          }}>
+
+          </View>
+        </TabView>
       </View>
-    );
-  }
-
-  _renderScene = ({ route }) => {
-    let data;
-    let index;
-    switch (route.key) {
-      case 'tab1':
-        data = '';
-        index = 0
-        break;
-      case 'tab2':
-        data = '';
-        index = 1
-        break;
-      case 'tab2':
-        data = '';
-        index = 2
-        break;
-      default:
-        return null;
-    }
-
-    return (
-      <TabScene
-        data={data}
-        index={index}
-      />
-    );
-  }
-
-  render() {
-    return (
-      <TabView
-        navigationState={{ index: this.state.index, routes: this.state.routes }}
-        renderScene={this._renderScene}
-        renderTabBar={this._renderTabBar}
-        onIndexChange={(index) => {
-          this.setState({ index: index })
-        }}
-        initialLayout={initialLayout}
-      />
     )
   }
 }
 
-const styles = StyleSheet.create({
-  scene: {
-    flex: 1,
-  },
-});
+
 
 export default TextCustomization
-
-
-class TabScene extends React.Component<any, any> {
-  render() {
-    return (
-      <View>
-
-      </View>
-    )
-  }
-}
