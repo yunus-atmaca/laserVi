@@ -9,7 +9,7 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
-import { fonts, getStyles, size } from '../utils/CustomizeText'
+import { fonts, getStyles, sizes } from '../utils/CustomizeText'
 
 class CustomizeText extends React.Component<any, any>{
 
@@ -68,7 +68,7 @@ class CustomizeText extends React.Component<any, any>{
 
   _sizeClicked = () => {
     this.props.openBottomSheet({
-      data: size,
+      data: sizes,
       font: this.state.selectedFont,
       navigatedFrom: 'Sizes'
     })
