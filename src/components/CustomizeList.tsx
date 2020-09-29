@@ -62,7 +62,7 @@ export default function customizeList(props) {
                 (props.navigatedFrom === 'styles' ? props.selectedFont + '-' + item :
                   props.selectedFont + '-' + props.selectedStyle)
             }}>
-              Preview
+              Ag
           </Text>
           </View>
         </View>
