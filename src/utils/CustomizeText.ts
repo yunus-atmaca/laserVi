@@ -25,21 +25,21 @@ export const fonts = [
 ]
 
 const styles = [
+  'Regular',
   'Bold',
   'Italic',
   'Bold Italic',
-  'Regular',
 ]
 
 const boldItalicRegular = [
+  'Regular',
   'Bold',
   'Italic',
-  'Regular',
 ]
 
 const boldRegular = [
-  'Bold',
   'Regular',
+  'Bold',
 ]
 
 const regular = [
