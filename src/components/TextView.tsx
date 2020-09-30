@@ -26,6 +26,7 @@ interface TextViewProps {
   text: string
   textCustomization: TextCustomizationProps,
   onFocus: Function
+  editText: Function
 }
 
 class TextView extends React.PureComponent<TextViewProps, any> {
@@ -54,6 +55,8 @@ class TextView extends React.PureComponent<TextViewProps, any> {
         //console.debug('onStartShouldSetPanResponderCapture')
         if (!this.state.selected) {
           this.props.onFocus({ id: this.props.id, type: 'text' })
+        } else {
+
         }
 
         return true
@@ -64,6 +67,10 @@ class TextView extends React.PureComponent<TextViewProps, any> {
       ], { useNativeDriver: false }),
       onPanResponderRelease: (e, gestureState) => {
         //console.debug('onPanResponderRelease')
+        if (this.state.selected && gestureState.dx === 0
+          && gestureState.dy === 0) {
+          this.props.editText(this.state.text)
+        }
 
         this.state.pan.flattenOffset();
       }

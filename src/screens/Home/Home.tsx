@@ -171,6 +171,7 @@ class Home extends React.Component<HomeProps, any>{
       })
     } else {
       //Selected TEXT
+      this.viewsRef[this.selectedView.id]._setState({ text: text })
     }
   }
 
@@ -260,6 +261,10 @@ class Home extends React.Component<HomeProps, any>{
         saved={props.view.saved}
         textCustomization={props.view.textCustomization}
         onFocus={this._setSelectedView}
+        editText={(text) => {
+          this.enteredText = text
+          this.setState({ showTempTextInput: true })
+        }}
       />
     )
   }
@@ -268,7 +273,6 @@ class Home extends React.Component<HomeProps, any>{
     return (
       <View style={styles.container}>
         <ScrollView>
-          <Header header={'Panel'} backgroundColor={'#141414'} />
           <TouchableWithoutFeedback onPress={(event) => {
             this._panelClicked(event)
           }}>
