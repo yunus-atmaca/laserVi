@@ -14,12 +14,23 @@ import TextCustomization from '../../components/TextCustomization'
 import HelperText from '../../components/HelperText'
 import TempTextInput from '../../components/TempTextInput'
 
+import TextView from '../../components/TextView'
+import ImageView from '../../components/ImageView'
+
+import UUID from '../../utils/UUID'
+
 const { width, height } = Dimensions.get('window')
 
 const VIEW = {
   TEXT: 'text',
   IMAGE: 'image',
   NONE: 'none'
+}
+
+interface selectedViewProps {
+  index: number,
+  id: string,
+  type: string
 }
 
 interface TextCustomizationProps {
@@ -35,13 +46,20 @@ interface HomeProps {
 class Home extends React.Component<HomeProps, any>{
   panelRef: any
   textCustomization: TextCustomizationProps
+
+  viewsRef: any
+
+  selectedView: selectedViewProps
   constructor(props) {
     super(props)
+
+    this.viewsRef = {}
 
     this.state = {
       selectedButton: VIEW.TEXT,
       showHelperText: true,
       showTempTextInput: false,
+      views: [],
     }
 
     this.textCustomization = {
@@ -49,9 +67,15 @@ class Home extends React.Component<HomeProps, any>{
       style: 'Regular',
       size: 14
     }
+
+    this.selectedView = {
+      index: -1,
+      id: '',
+      type: VIEW.NONE
+    }
   }
 
-  _panelClicked = () => {
+  _panelClicked = (event) => {
     if (this.state.showHelperText) {
       this.setState({ showHelperText: false })
     }
@@ -89,6 +113,90 @@ class Home extends React.Component<HomeProps, any>{
   _textInputDone = (text) => {
     console.debug(text)
     this.setState({ showTempTextInput: false })
+
+    if (this.selectedView.type === VIEW.IMAGE) {
+      console.debug('Something is wrong selectedView IMAGE')
+      return;
+    }
+
+    if (this.selectedView.type === VIEW.NONE) {
+      let id = UUID()
+
+      let textInfo = {
+        id: id,
+        type: VIEW.TEXT,
+        view: {
+          textCustomization: this.textCustomization,
+          selected: true,
+          saved: false,
+          text: text,
+        }
+      }
+
+      this.setState({
+        views: this.state.views.concat([this._createTextView(textInfo)]),
+      })
+    } else {
+      //Selected TEXT
+    }
+  }
+
+  _createViewInfo = (props) => {
+    /*return (
+      <ViewInfo
+        key={props.id}
+        id={props.id}
+        index={props.index}
+        onRef={(ref) => {
+          this.viewsInfoRef[props.id] = ref
+        }}
+        selected={props.view.selected}
+        name={props.type === VIEW.TEXT ? props.view.text : props.view.image.title}
+        saved={props.view.saved}
+        type={props.type}
+        saveViewClicked={this._saveViewClicked}
+        removeViewClicked={this._removeViewClicked}
+        onFocus={this._onFocusView}
+      />
+    )*/
+  }
+
+  _createImageView = (props) => {
+    /*return (
+      <ImageView
+        key={props.id}
+        id={props.id}
+        index={props.index}
+        onRef={(ref) => {
+          //this.viewsRef[props.id] = ref
+        }}
+        selected={props.view.selected}
+        image={props.view.image}
+        saved={props.view.saved}
+        top={props.view.top}
+        left={props.view.left}
+      //saveViewClicked={this._saveViewClicked}
+      //removeViewClicked={this._removeViewClicked}
+      //onFocus={this._onFocusView}
+      />
+    )*/
+  }
+
+  _createTextView = (props) => {
+    return (
+      <TextView
+        key={props.id}
+        id={props.id}
+        index={props.index}
+        onRef={(ref) => {
+          this.viewsRef[props.id] = ref
+        }}
+        selected={props.view.selected}
+        text={props.view.text}
+        saved={props.view.saved}
+        textCustomization={props.view.textCustomization}
+      />
+    )
   }
 
   render() {
@@ -96,8 +204,8 @@ class Home extends React.Component<HomeProps, any>{
       <View style={styles.container}>
         <ScrollView>
           <Header header={'Panel'} backgroundColor={'#141414'} />
-          <TouchableWithoutFeedback onPress={() => {
-            this._panelClicked()
+          <TouchableWithoutFeedback onPress={(event) => {
+            this._panelClicked(event)
           }}>
             <View
               ref={(ref) => {
@@ -109,6 +217,15 @@ class Home extends React.Component<HomeProps, any>{
                   <HelperText
                     selectedView={this.state.selectedButton}
                   />
+                )
+              }
+              {
+                this.state.views.length > 0 && (
+                  this.state.views.map(view => {
+                    return (
+                      view
+                    )
+                  })
                 )
               }
             </View>
