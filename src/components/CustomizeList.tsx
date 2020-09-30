@@ -12,11 +12,11 @@ export default function customizeList(props) {
         //console.debug(index)
         setSelected(index)
         if (props.navigatedFrom === 'fonts') {
-          props.fontSelected(index, item)
+          props.fontSelected(item)
         } else if (props.navigatedFrom === 'styles') {
-          props.styleSelected(index, item)
+          props.styleSelected(item)
         } else if (props.navigatedFrom === 'sizes') {
-          props.sizeSelected(index, item)
+          props.sizeSelected(item)
         }
       }}>
         <View style={{

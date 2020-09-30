@@ -186,7 +186,6 @@ class Pager extends React.Component<PagerProps, any>{
           this.state.tabs && (
             <Tabs
               tabClicked={(index) => {
-                console.log('INDEX: ', index)
                 this._scrollToIndex(index, true)
               }}
               width={this.state.width}

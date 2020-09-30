@@ -13,7 +13,8 @@ interface TempTextInputProps {
   selectedFont: string,
   selectedSize: number,
   selectedStyle: string,
-  textInputDone: Function
+  textInputDone: Function,
+  close: Function
 }
 
 class TempTextInput extends React.Component<TempTextInputProps, any> {
@@ -70,6 +71,26 @@ class TempTextInput extends React.Component<TempTextInputProps, any> {
             justifyContent: 'center',
           }}>
             <Ionicons name={'ios-checkmark-sharp'} size={24} color={'white'} />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={.7}
+          style={{
+            position: "absolute",
+            left: 4,
+            top: 0,
+          }}
+          onPress={() => {
+            this.props.close()
+          }}>
+          <View style={{
+            height: 36,
+            width: 36,
+            borderRadius: 12,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <Ionicons name={'close'} size={24} color={'red'} />
           </View>
         </TouchableOpacity>
       </View>

@@ -28,7 +28,6 @@ const VIEW = {
 }
 
 interface selectedViewProps {
-  index: number,
   id: string,
   type: string
 }
@@ -50,10 +49,12 @@ class Home extends React.Component<HomeProps, any>{
   viewsRef: any
 
   selectedView: selectedViewProps
+  enteredText: string
   constructor(props) {
     super(props)
 
     this.viewsRef = {}
+    this.enteredText = ''
 
     this.state = {
       selectedButton: VIEW.TEXT,
@@ -65,19 +66,25 @@ class Home extends React.Component<HomeProps, any>{
     this.textCustomization = {
       font: 'Roboto',
       style: 'Regular',
-      size: 14
+      size: 16
     }
 
     this.selectedView = {
-      index: -1,
       id: '',
       type: VIEW.NONE
     }
   }
 
   _panelClicked = (event) => {
+    console.debug('_panelClicked')
+
     if (this.state.showHelperText) {
       this.setState({ showHelperText: false })
+    }
+
+    if (this.selectedView.id !== '') {
+      this._setUnselectedEveryThing()
+      return
     }
 
     if (this.state.selectedButton === VIEW.NONE) {
@@ -108,11 +115,32 @@ class Home extends React.Component<HomeProps, any>{
     } else if (props.size) {
       this.textCustomization.size = props.size
     }
+
+    //console.log(this.selectedView)
+
+    if (this.selectedView.id !== '') {
+      if (this.selectedView.type === VIEW.TEXT) {
+        this.viewsRef[this.selectedView.id]._setState({
+          fontSize: this.textCustomization.size,
+          fontFamily: this.textCustomization.font,
+          fontStyle: this.textCustomization.style
+        })
+      } else {
+        console.debug('_customizationSelected')
+      }
+    }
   }
 
   _textInputDone = (text) => {
-    console.debug(text)
     this.setState({ showTempTextInput: false })
+
+    if (text === '') {
+      console.debug('No text entered')
+      if (this.state.selectedButton === VIEW.TEXT) {
+        this.setState({ showHelperText: true })
+      }
+      return
+    }
 
     if (this.selectedView.type === VIEW.IMAGE) {
       console.debug('Something is wrong selectedView IMAGE')
@@ -135,10 +163,47 @@ class Home extends React.Component<HomeProps, any>{
 
       this.setState({
         views: this.state.views.concat([this._createTextView(textInfo)]),
+      }, () => {
+        this._setSelectedView({
+          id: id,
+          type: VIEW.TEXT
+        });
       })
     } else {
       //Selected TEXT
     }
+  }
+
+  _setUnselectedEveryThing = () => {
+    if (this.selectedView.id !== '') {
+      this.viewsRef[this.selectedView.id]._setSelected(null, false)
+      this.selectedView = {
+        id: '',
+        type: VIEW.NONE
+      }
+    }
+  }
+
+  _setSelectedView = (view) => {
+    if (this.selectedView.id === '') {
+      this.viewsRef[view.id]._setSelected(null, true)
+    } else {
+      if (view.id !== this.selectedView.id) {
+        //console.debug('FALSE: ' + view.id + ' | | ' + this.selectedView.id)
+        this.viewsRef[this.selectedView.id]._setSelected(null, false)
+        //this.viewsInfoRef[this.selectedView.id]._setState({ selected: false })
+        //this.viewsJSON[this.selectedView.index].view.selected = false
+      }
+
+      if (view.id !== this.selectedView.id) {
+        //console.debug('TRUE: ' + view.id + ' | | ' + this.selectedView.id)
+        this.viewsRef[view.id]._setSelected(null, true)
+        //this.viewsInfoRef[view.id]._setState({ selected: true })
+        //this.viewsJSON[view.index].view.selected = true
+      }
+
+    }
+    this.selectedView = view;
   }
 
   _createViewInfo = (props) => {
@@ -187,7 +252,6 @@ class Home extends React.Component<HomeProps, any>{
       <TextView
         key={props.id}
         id={props.id}
-        index={props.index}
         onRef={(ref) => {
           this.viewsRef[props.id] = ref
         }}
@@ -195,6 +259,7 @@ class Home extends React.Component<HomeProps, any>{
         text={props.view.text}
         saved={props.view.saved}
         textCustomization={props.view.textCustomization}
+        onFocus={this._setSelectedView}
       />
     )
   }
@@ -248,14 +313,18 @@ class Home extends React.Component<HomeProps, any>{
           <View style={styles.buttonContainer}>
             <Button
               iconName={'format-text'}
-              iconColor={this.state.selectedButton === VIEW.TEXT ? '#FF9900' : 'white'}
-              indicatorColor={this.state.selectedButton === VIEW.TEXT ? '#FF9900' : '#141414'}
+              iconColor={this.state.selectedButton === VIEW.TEXT ?
+                '#FF9900' : 'white'}
+              indicatorColor={this.state.selectedButton === VIEW.TEXT ?
+                '#FF9900' : '#141414'}
               action={this._textClicked}
             />
             <Button
               iconName={'image-outline'}
-              iconColor={this.state.selectedButton === VIEW.IMAGE ? '#FF9900' : 'white'}
-              indicatorColor={this.state.selectedButton === VIEW.IMAGE ? '#FF9900' : '#141414'}
+              iconColor={this.state.selectedButton === VIEW.IMAGE ?
+                '#FF9900' : 'white'}
+              indicatorColor={this.state.selectedButton === VIEW.IMAGE ?
+                '#FF9900' : '#141414'}
               action={this._imageClicked}
             />
           </View>
@@ -282,11 +351,22 @@ class Home extends React.Component<HomeProps, any>{
         {
           this.state.showTempTextInput && (
             <TempTextInput
-              value={'Yunus ATMACA'}
+              value={this.enteredText}
               selectedFont={this.textCustomization.font}
               selectedSize={this.textCustomization.size}
               selectedStyle={this.textCustomization.style}
               textInputDone={this._textInputDone}
+              close={() => {
+                if (this.state.selectedButton === VIEW.TEXT &&
+                  this.selectedView.id === '') {
+                  this.setState({
+                    showTempTextInput: false,
+                    showHelperText: true
+                  })
+                } else {
+                  this.setState({ showTempTextInput: false })
+                }
+              }}
             />
           )
         }
@@ -308,6 +388,7 @@ const styles = StyleSheet.create({
   addingPanelContainer: {
     height: 150,
     width: width,
+    backgroundColor: '#141414'
   },
   buttonContainer: {
     width: width,

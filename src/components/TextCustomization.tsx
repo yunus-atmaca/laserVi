@@ -25,12 +25,12 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
     this.state = {
       selectedFont: 'Roboto',
       selectedStyle: 'Regular',
-      selectedSize: 14,
+      selectedSize: 16,
       initialIndex: 0,
     }
   }
 
-  _fontSelected = (index, font) => {
+  _fontSelected = (font) => {
     //console.debug(index + ' | ' + font)
     this.setState({
       selectedFont: font,
@@ -38,19 +38,29 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
       selectedStyle: getStyles(font)[0]
     })
 
+    this._styleSelected(getStyles(font)[0], true)
+
     this.props.customizationSelected({ font: font })
   }
 
-  _styleSelected = (index, style) => {
-    this.setState({
-      selectedStyle: style,
-      initialIndex: 1
-    })
+  _styleSelected = (style, doNotSetIndex) => {
+    //console.debug('_styleSelected')
+    //console.log(style)
+    if (doNotSetIndex) {
+      this.setState({
+        selectedStyle: style,
+      })
+    } else {
+      this.setState({
+        selectedStyle: style,
+        initialIndex: 1
+      })
+    }
 
     this.props.customizationSelected({ style: style })
   }
 
-  _sizeSelected = (index, size) => {
+  _sizeSelected = (size) => {
     this.setState({
       selectedSize: size,
       initialIndex: 2

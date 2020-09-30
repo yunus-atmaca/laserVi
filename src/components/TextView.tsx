@@ -6,7 +6,8 @@ import {
   PanResponder,
   Animated,
   Keyboard,
-  Text
+  Text,
+  TouchableWithoutFeedback
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -19,18 +20,16 @@ interface TextCustomizationProps {
 interface TextViewProps {
   key: string
   id: string
-  index: number
   onRef: Function
   selected: boolean
   saved: boolean
   text: string
-  textCustomization: TextCustomizationProps
+  textCustomization: TextCustomizationProps,
+  onFocus: Function
 }
 
 class TextView extends React.PureComponent<TextViewProps, any> {
-
   panResponder: any
-  textInputRef: any
   constructor(props) {
     super(props)
 
@@ -51,11 +50,21 @@ class TextView extends React.PureComponent<TextViewProps, any> {
           y: this.state.pan.y._value
         });
       },
-      onStartShouldSetPanResponder: (e, gesture) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => {
+        //console.debug('onStartShouldSetPanResponderCapture')
+        if (!this.state.selected) {
+          this.props.onFocus({ id: this.props.id, type: 'text' })
+        }
+
+        return true
+      },
+
       onPanResponderMove: Animated.event([
         null, { dx: this.state.pan.x, dy: this.state.pan.y }
       ], { useNativeDriver: false }),
-      onPanResponderRelease: (e, g) => {
+      onPanResponderRelease: (e, gestureState) => {
+        //console.debug('onPanResponderRelease')
+
         this.state.pan.flattenOffset();
       }
     });
@@ -74,12 +83,9 @@ class TextView extends React.PureComponent<TextViewProps, any> {
   }
 
   _setSelected = (callback, selected) => {
-    this.textInputRef.blur()
-    if (this.state.selected) {
-      this.setState({ selected: selected }, () => {
-        callback && callback()
-      })
-    }
+    this.setState({ selected: selected }, () => {
+      callback && callback()
+    })
   }
 
   render() {
@@ -97,15 +103,14 @@ class TextView extends React.PureComponent<TextViewProps, any> {
             left: 24,
           }, panStyle]
         }>
+
         <View style={{
           borderWidth: this.state.selected ? 1 : 0,
           borderColor: 'blue',
         }}>
           <Text style={{
-            paddingTop: 0,
-            paddingBottom: 0,
             fontSize: this.state.fontSize,
-            fontFamily: this.state.fontFamily
+            fontFamily: this.state.fontFamily + '-' + this.state.fontStyle
           }}>
             {this.state.text}
           </Text>
