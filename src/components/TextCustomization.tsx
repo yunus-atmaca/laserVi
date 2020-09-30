@@ -14,7 +14,8 @@ import { fonts, getStyles, sizes } from '../utils/CustomizeText'
 const { width, height } = Dimensions.get('window')
 
 interface TextCustomizationProps {
-  height: number
+  height: number,
+  customizationSelected: Function
 }
 
 class TextCustomization extends React.Component<TextCustomizationProps, any> {
@@ -36,6 +37,8 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
       initialIndex: 0,
       selectedStyle: getStyles(font)[0]
     })
+
+    this.props.customizationSelected({ font: font })
   }
 
   _styleSelected = (index, style) => {
@@ -43,6 +46,8 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
       selectedStyle: style,
       initialIndex: 1
     })
+
+    this.props.customizationSelected({ style: style })
   }
 
   _sizeSelected = (index, size) => {
@@ -50,6 +55,8 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
       selectedSize: size,
       initialIndex: 2
     })
+
+    this.props.customizationSelected({ size: size })
   }
 
   render() {

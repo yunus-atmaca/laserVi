@@ -3,7 +3,8 @@ import {
   View,
   Text,
   Dimensions,
-  StyleSheet
+  StyleSheet,
+  TouchableWithoutFeedback
 } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 
@@ -11,6 +12,7 @@ import Header from '../../components/Header'
 import Button from '../../components/Button'
 import TextCustomization from '../../components/TextCustomization'
 import HelperText from '../../components/HelperText'
+import TempTextInput from '../../components/TempTextInput'
 
 const { width, height } = Dimensions.get('window')
 
@@ -20,17 +22,49 @@ const VIEW = {
   NONE: 'none'
 }
 
+interface TextCustomizationProps {
+  font: string,
+  style: string,
+  size: number
+}
+
 interface HomeProps {
 
 }
 
 class Home extends React.Component<HomeProps, any>{
+  panelRef: any
+  textCustomization: TextCustomizationProps
   constructor(props) {
     super(props)
 
     this.state = {
       selectedButton: VIEW.TEXT,
-      showHelperText: true
+      showHelperText: true,
+      showTempTextInput: false,
+    }
+
+    this.textCustomization = {
+      font: 'Roboto',
+      style: 'Regular',
+      size: 14
+    }
+  }
+
+  _panelClicked = () => {
+    if (this.state.showHelperText) {
+      this.setState({ showHelperText: false })
+    }
+
+    if (this.state.selectedButton === VIEW.NONE) {
+      console.debug('NOTHING SELECTED')
+    } else if (this.state.selectedButton === VIEW.TEXT) {
+      console.debug('TEXT SELECTED')
+
+      this.setState({ showTempTextInput: true })
+    } else if (this.state.selectedButton === VIEW.IMAGE) {
+      console.debug('IMAGE SELECTED')
+
     }
   }
 
@@ -42,33 +76,55 @@ class Home extends React.Component<HomeProps, any>{
     this.setState({ selectedButton: VIEW.IMAGE })
   }
 
+  _customizationSelected = (props) => {
+    if (props.font) {
+      this.textCustomization.font = props.font
+    } else if (props.style) {
+      this.textCustomization.style = props.style
+    } else if (props.size) {
+      this.textCustomization.size = props.size
+    }
+  }
+
+  _textInputDone = (text) => {
+    console.debug(text)
+    this.setState({ showTempTextInput: false })
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <ScrollView>
           <Header header={'Panel'} backgroundColor={'#141414'} />
-          <View style={styles.panel}>
-            {
-              this.state.showHelperText && (
-                <HelperText
-                  selectedView={this.state.selectedButton}
-                />
-              )
-            }
-          </View>
+          <TouchableWithoutFeedback onPress={() => {
+            this._panelClicked()
+          }}>
+            <View
+              ref={(ref) => {
+                this.panelRef = ref
+              }}
+              style={styles.panel}>
+              {
+                this.state.showHelperText && (
+                  <HelperText
+                    selectedView={this.state.selectedButton}
+                  />
+                )
+              }
+            </View>
+          </TouchableWithoutFeedback>
           <View style={styles.addingPanelContainer}>
             {
               this.state.selectedButton === VIEW.TEXT ?
                 (
                   <TextCustomization
                     height={styles.addingPanelContainer.height}
+                    customizationSelected={this._customizationSelected}
                   />
                 )
                 :
                 (
-                  <TextCustomization
-                    height={styles.addingPanelContainer.height}
-                  />
+                  null
                 )
             }
           </View>
@@ -106,7 +162,18 @@ class Home extends React.Component<HomeProps, any>{
             </Text>
           </View>
         </ScrollView>
-      </View>
+        {
+          this.state.showTempTextInput && (
+            <TempTextInput
+              value={'Yunus ATMACA'}
+              selectedFont={this.textCustomization.font}
+              selectedSize={this.textCustomization.size}
+              selectedStyle={this.textCustomization.style}
+              textInputDone={this._textInputDone}
+            />
+          )
+        }
+      </View >
     )
   }
 }

@@ -77,7 +77,7 @@ export default function customizeList(props) {
       <FlatList
         data={props.data}
         renderItem={_renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index.toString()}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
       />
