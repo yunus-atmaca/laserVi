@@ -14,7 +14,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 interface TextCustomizationProps {
   font: string,
   style: string,
-  size: number
+  size: number,
+  align: string
 }
 
 interface TextViewProps {
@@ -41,6 +42,7 @@ class TextView extends React.PureComponent<TextViewProps, any> {
       fontSize: this.props.textCustomization.size,
       fontFamily: this.props.textCustomization.font,
       fontStyle: this.props.textCustomization.style,
+      textAlign: this.props.textCustomization.align,
       pan: new Animated.ValueXY()
     }
 
@@ -106,8 +108,10 @@ class TextView extends React.PureComponent<TextViewProps, any> {
           [{
             flexDirection: 'row',
             position: 'absolute',
-            top: 24,
-            left: 24,
+            top: 48,
+            left: 0,
+            right: 0,
+            justifyContent: 'center'
           }, panStyle]
         }>
 
@@ -116,6 +120,8 @@ class TextView extends React.PureComponent<TextViewProps, any> {
           borderColor: 'blue',
         }}>
           <Text style={{
+            color: 'black',
+            textAlign: this.state.textAlign,
             fontSize: this.state.fontSize,
             fontFamily: this.state.fontFamily + '-' + this.state.fontStyle
           }}>

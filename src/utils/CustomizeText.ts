@@ -76,6 +76,29 @@ export const sizes = [
   42
 ]
 
+export const textAligns = [
+  {
+    title: 'Left',
+    iconName: 'format-align-left',
+    action: 'left'
+  },
+  {
+    title: 'Center',
+    iconName: 'format-align-center',
+    action: 'center'
+  },
+  {
+    title: 'Right',
+    iconName: 'format-align-right',
+    action: 'right'
+  },
+  {
+    title: 'Justify',
+    iconName: 'format-align-justify',
+    action: 'justify'
+  },
+]
+
 
 export function getStyles(fontName) {
   switch (fontName) {

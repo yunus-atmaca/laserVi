@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, TouchableWithoutFeedback } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 export default function customizeList(props) {
 
@@ -17,6 +18,8 @@ export default function customizeList(props) {
           props.styleSelected(item)
         } else if (props.navigatedFrom === 'sizes') {
           props.sizeSelected(item)
+        } else if (props.navigatedFrom === 'textAligns') {
+          props.alignSelected(item.action)
         }
       }}>
         <View style={{
@@ -44,9 +47,9 @@ export default function customizeList(props) {
               color: 'black',
               alignSelf: 'center',
               fontSize: 12,
-              fontFamily: 'Roboto' + '-Regular'
+              fontFamily: 'Roboto' + '-Regular',
             }}>
-              {item}
+              {props.navigatedFrom === 'textAligns' ? item.title : item}
             </Text>
           </View>
           <View style={{
@@ -55,15 +58,26 @@ export default function customizeList(props) {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-            <Text style={{
-              color: 'black',
-              fontSize: props.navigatedFrom === 'sizes' ? item : 24,
-              fontFamily: props.navigatedFrom === 'fonts' ? item + '-Regular' :
-                (props.navigatedFrom === 'styles' ? props.selectedFont + '-' + item :
-                  props.selectedFont + '-' + props.selectedStyle)
-            }}>
-              Ag
-          </Text>
+            {
+              props.navigatedFrom === 'textAligns' ?
+                (
+                  <MaterialCommunityIcons
+                    name={item.iconName} size={24} color={'black'} />
+                )
+                :
+                (
+                  <Text style={{
+                    color: 'black',
+                    fontSize: props.navigatedFrom === 'sizes' ? item : 24,
+                    fontFamily: props.navigatedFrom === 'fonts' ? item + '-Regular' :
+                      (props.navigatedFrom === 'styles' ? props.selectedFont + '-' + item :
+                        props.selectedFont + '-' + props.selectedStyle)
+                  }}>
+                    Ag
+                  </Text>
+                )
+            }
+
           </View>
         </View>
       </TouchableWithoutFeedback>

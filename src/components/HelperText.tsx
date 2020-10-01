@@ -11,7 +11,7 @@ export default function helperText(props) {
         justifyContent: 'center',
       }}>
       <Text style={{
-        color: 'rgba(128,128,128, .7)',
+        color: 'rgba(128,128,128, .2)',
         fontSize: 24,
         marginHorizontal: 48,
         textAlign: 'center',

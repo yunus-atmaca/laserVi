@@ -9,7 +9,7 @@ import {
 import TabView from './TabView/Pager'
 import CustomizeList from './CustomizeList'
 
-import { fonts, getStyles, sizes } from '../utils/CustomizeText'
+import { fonts, getStyles, sizes, textAligns } from '../utils/CustomizeText'
 
 const { width, height } = Dimensions.get('window')
 
@@ -26,6 +26,7 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
       selectedFont: 'Roboto',
       selectedStyle: 'Regular',
       selectedSize: 16,
+      selectedAlign: 'left',
       initialIndex: 0,
     }
   }
@@ -69,6 +70,10 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
     this.props.customizationSelected({ size: size })
   }
 
+  _alignSelected = (align) => {
+    this.props.customizationSelected({ align: align })
+  }
+
   render() {
     return (
       <View style={{
@@ -89,6 +94,10 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
             {
               tab: 'Size',
               index: 2
+            },
+            {
+              tab: 'Align',
+              index: 3
             }
           ]}
           initialIndex={this.state.initialIndex}
@@ -129,6 +138,17 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
               selectedStyle={this.state.selectedStyle}
               sizeSelected={this._sizeSelected}
               data={sizes}
+            />
+          </View>
+          <View style={{
+            width: width,
+            height: this.props.height - 32,
+            backgroundColor: 'gray'
+          }}>
+            <CustomizeList
+              navigatedFrom={'textAligns'}
+              alignSelected={this._alignSelected}
+              data={textAligns}
             />
           </View>
         </TabView>

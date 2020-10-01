@@ -35,7 +35,8 @@ interface selectedViewProps {
 interface TextCustomizationProps {
   font: string,
   style: string,
-  size: number
+  size: number,
+  align: string
 }
 
 interface HomeProps {
@@ -66,7 +67,8 @@ class Home extends React.Component<HomeProps, any>{
     this.textCustomization = {
       font: 'Roboto',
       style: 'Regular',
-      size: 16
+      size: 16,
+      align: 'left'
     }
 
     this.selectedView = {
@@ -114,6 +116,8 @@ class Home extends React.Component<HomeProps, any>{
       this.textCustomization.style = props.style
     } else if (props.size) {
       this.textCustomization.size = props.size
+    } else if (props.align) {
+      this.textCustomization.align = props.align
     }
 
     //console.log(this.selectedView)
@@ -123,7 +127,8 @@ class Home extends React.Component<HomeProps, any>{
         this.viewsRef[this.selectedView.id]._setState({
           fontSize: this.textCustomization.size,
           fontFamily: this.textCustomization.font,
-          fontStyle: this.textCustomization.style
+          fontStyle: this.textCustomization.style,
+          textAlign: this.textCustomization.align
         })
       } else {
         console.debug('_customizationSelected')
@@ -355,7 +360,7 @@ class Home extends React.Component<HomeProps, any>{
         {
           this.state.showTempTextInput && (
             <TempTextInput
-              value={this.enteredText}
+              value={this.selectedView.id === '' ? '' : this.enteredText}
               selectedFont={this.textCustomization.font}
               selectedSize={this.textCustomization.size}
               selectedStyle={this.textCustomization.style}
