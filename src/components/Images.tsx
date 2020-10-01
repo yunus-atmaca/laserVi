@@ -10,7 +10,8 @@ const { width, height } = Dimensions.get('window')
 
 interface ImagesProps {
   height: number,
-  onLongPressImage: Function
+  onLongPressImage: Function,
+  onImageSelected: Function
 }
 
 class Images extends React.Component<ImagesProps, any> {
@@ -57,6 +58,7 @@ class Images extends React.Component<ImagesProps, any> {
             <ImageList
               data={DATA}
               onLongPress={this._onLongPress}
+              onImageSelected={this.props.onImageSelected}
             />
           </View>
           <View style={{
@@ -67,6 +69,7 @@ class Images extends React.Component<ImagesProps, any> {
             <ImageList
               data={DATA}
               onLongPress={this._onLongPress}
+              onImageSelected={this.props.onImageSelected}
             />
           </View>
         </TabView>

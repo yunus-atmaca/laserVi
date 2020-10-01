@@ -101,7 +101,26 @@ class Home extends React.Component<HomeProps, any>{
       this.setState({ showTempTextInput: true })
     } else if (this.state.selectedButton === VIEW.IMAGE) {
       console.debug('IMAGE SELECTED')
+      let id = UUID()
 
+      let ImageInfo = {
+        id: id,
+        type: VIEW.IMAGE,
+        view: {
+          selected: true,
+          saved: false,
+          image: this.selectedImage,
+        }
+      }
+
+      this.setState({
+        views: this.state.views.concat([this._createImageView(ImageInfo)]),
+      }, () => {
+        this._setSelectedView({
+          id: id,
+          type: VIEW.IMAGE
+        });
+      })
     }
   }
 
@@ -237,24 +256,19 @@ class Home extends React.Component<HomeProps, any>{
   }
 
   _createImageView = (props) => {
-    /*return (
+    return (
       <ImageView
         key={props.id}
         id={props.id}
-        index={props.index}
         onRef={(ref) => {
-          //this.viewsRef[props.id] = ref
+          this.viewsRef[props.id] = ref
         }}
         selected={props.view.selected}
         image={props.view.image}
         saved={props.view.saved}
-        top={props.view.top}
-        left={props.view.left}
-      //saveViewClicked={this._saveViewClicked}
-      //removeViewClicked={this._removeViewClicked}
-      //onFocus={this._onFocusView}
+        onFocus={this._setSelectedView}
       />
-    )*/
+    )
   }
 
   _createTextView = (props) => {
@@ -321,8 +335,10 @@ class Home extends React.Component<HomeProps, any>{
                 (
                   <Images
                     height={styles.addingPanelContainer.height}
+                    onImageSelected={(item) => {
+                      this.selectedImage = item
+                    }}
                     onLongPressImage={(item) => {
-                      console.log(item)
                       this.selectedImage = item
                       this.setState({ showSelectedImage: true })
                     }}

@@ -6,11 +6,24 @@ import {
   PanResponder,
   Animated,
   Keyboard,
+  Dimensions
 } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-class ImageView extends React.PureComponent<any, any> {
+const { width, height } = Dimensions.get('window')
+
+interface ImageViewProps {
+  key: string
+  id: string
+  onRef: Function
+  selected: boolean
+  saved: boolean
+  image: any,
+  onFocus: Function
+}
+
+class ImageView extends React.PureComponent<ImageViewProps, any> {
 
   panResponder: any
   image: any
@@ -22,13 +35,20 @@ class ImageView extends React.PureComponent<any, any> {
     this.state = {
       selected: this.props.selected,
       saved: this.props.saved,
-      title: this.props.title,
-      top: this.props.top,
-      left: this.props.left,
       pan: new Animated.ValueXY()
     }
 
     this.panResponder = PanResponder.create({
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => {
+        //console.debug('onStartShouldSetPanResponderCapture')
+        if (!this.state.selected) {
+          this.props.onFocus({ id: this.props.id, type: 'text' })
+        } else {
+
+        }
+
+        return true
+      },
       onStartShouldSetPanResponder: (evt, gestureState) => true,
       onPanResponderGrant: () => {
         this.state.pan.setOffset({
@@ -58,11 +78,9 @@ class ImageView extends React.PureComponent<any, any> {
   }
 
   _setSelected = (callback, selected) => {
-    if (this.state.selected) {
-      this.setState({ selected: selected }, () => {
-        callback && callback()
-      })
-    }
+    this.setState({ selected: selected }, () => {
+      callback && callback()
+    })
   }
 
   render() {
@@ -76,29 +94,26 @@ class ImageView extends React.PureComponent<any, any> {
           [{
             flexDirection: 'row',
             position: 'absolute',
-            top: this.state.top,
-            left: this.state.left,
+            top: 48,
+            left: 0,
+            right: 0,
+            justifyContent: 'center'
           }, panStyle]
         }>
         <View style={{
           borderWidth: this.state.selected ? 1 : 0,
           borderColor: 'blue',
         }}>
-          <TouchableWithoutFeedback onPress={() => {
-            Keyboard.dismiss()
-            this.props.onFocus(this.props.id, 'image')
-          }}>
-            <View>
-              <Image
-                source={this.image.source}
-                resizeMode={'contain'}
-                style={{
-                  width: 180,
-                  height: 180
-                }} />
-            </View>
-          </TouchableWithoutFeedback>
-          {
+          <View>
+            <Image
+              source={this.image.source}
+              resizeMode={'contain'}
+              style={{
+                width: 180,
+                height: 180
+              }} />
+          </View>
+          {/*
             this.state.selected && (
               <TouchableOpacity
                 onPress={() => {
@@ -147,7 +162,7 @@ class ImageView extends React.PureComponent<any, any> {
                 </View>
               </TouchableOpacity>
             )
-          }
+                */}
         </View>
       </Animated.View>
     )

@@ -19,6 +19,7 @@ export default function customizeList(props) {
         onPress={() => {
           console.debug(index)
           setSelected(index)
+          props.onImageSelected(item)
         }}>
         <View style={{
           borderWidth: selected === index ? 1 : 0,
