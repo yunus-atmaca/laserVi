@@ -11,8 +11,10 @@ import { ScrollView } from 'react-native-gesture-handler'
 import Header from '../../components/Header'
 import Button from '../../components/Button'
 import TextCustomization from '../../components/TextCustomization'
+import Images from '../../components/Images'
 import HelperText from '../../components/HelperText'
 import TempTextInput from '../../components/TempTextInput'
+import SelectedImage from '../../components/SelectedImage'
 
 import TextView from '../../components/TextView'
 import ImageView from '../../components/ImageView'
@@ -51,6 +53,7 @@ class Home extends React.Component<HomeProps, any>{
 
   selectedView: selectedViewProps
   enteredText: string
+  selectedImage: any
   constructor(props) {
     super(props)
 
@@ -62,6 +65,7 @@ class Home extends React.Component<HomeProps, any>{
       showHelperText: true,
       showTempTextInput: false,
       views: [],
+      showSelectedImage: false
     }
 
     this.textCustomization = {
@@ -315,7 +319,14 @@ class Home extends React.Component<HomeProps, any>{
                 )
                 :
                 (
-                  null
+                  <Images
+                    height={styles.addingPanelContainer.height}
+                    onLongPressImage={(item) => {
+                      console.log(item)
+                      this.selectedImage = item
+                      this.setState({ showSelectedImage: true })
+                    }}
+                  />
                 )
             }
           </View>
@@ -344,7 +355,7 @@ class Home extends React.Component<HomeProps, any>{
             height: 36,
             width: 144,
             borderRadius: 18,
-            marginVertical: 18,
+            marginTop: 36,
             alignItems: 'center',
             justifyContent: 'center'
           }}>
@@ -376,6 +387,14 @@ class Home extends React.Component<HomeProps, any>{
                   this.setState({ showTempTextInput: false })
                 }
               }}
+            />
+          )
+        }
+        {
+          this.state.showSelectedImage && (
+            <SelectedImage
+              image={this.selectedImage}
+              close={() => { this.setState({ showSelectedImage: false }) }}
             />
           )
         }

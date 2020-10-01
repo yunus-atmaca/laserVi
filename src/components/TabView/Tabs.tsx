@@ -30,7 +30,7 @@ export default function tabs(props) {
               <View style={{
                 paddingHorizontal: 8,
                 height: 32,
-                width: 64,
+                marginHorizontal: 4,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>

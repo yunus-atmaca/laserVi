@@ -1,11 +1,9 @@
 import React from 'react'
 import {
   View,
-  TextInput,
   TouchableOpacity,
   PanResponder,
   Animated,
-  Keyboard,
   Text,
   TouchableWithoutFeedback
 } from 'react-native'
@@ -64,9 +62,11 @@ class TextView extends React.PureComponent<TextViewProps, any> {
         return true
       },
 
-      onPanResponderMove: Animated.event([
-        null, { dx: this.state.pan.x, dy: this.state.pan.y }
-      ], { useNativeDriver: false }),
+      onPanResponderMove: (evt, gestureState) => {
+        return Animated.event([
+          null, { dx: this.state.pan.x, dy: this.state.pan.y }
+        ], { useNativeDriver: false })(evt, gestureState)
+      },
       onPanResponderRelease: (e, gestureState) => {
         //console.debug('onPanResponderRelease')
         if (this.state.selected && gestureState.dx === 0
@@ -118,6 +118,8 @@ class TextView extends React.PureComponent<TextViewProps, any> {
         <View style={{
           borderWidth: this.state.selected ? 1 : 0,
           borderColor: 'blue',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}>
           <Text style={{
             color: 'black',
@@ -128,7 +130,7 @@ class TextView extends React.PureComponent<TextViewProps, any> {
             {this.state.text}
           </Text>
           {
-            this.state.selected && (
+            /*this.state.selected && (
               <TouchableOpacity
                 onPress={() => {
                   if (this.state.saved) {
@@ -160,7 +162,7 @@ class TextView extends React.PureComponent<TextViewProps, any> {
                   }
                 </View>
               </TouchableOpacity>
-            )
+            )*/
           }
         </View>
       </Animated.View>
