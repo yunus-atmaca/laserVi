@@ -88,22 +88,20 @@ class ImageView extends React.PureComponent<ImageViewProps, any> {
       transform: this.state.pan.getTranslateTransform()
     }
     return (
-      <Animated.View
-        {...this.panResponder.panHandlers}
-        style={
-          [{
-            flexDirection: 'row',
-            position: 'absolute',
-            top: 48,
-            left: 0,
-            right: 0,
-            justifyContent: 'center'
-          }, panStyle]
-        }>
-        <View style={{
-          borderWidth: this.state.selected ? 1 : 0,
-          borderColor: 'blue',
-        }}>
+      <View style={{
+        flexDirection: 'row',
+        position: 'absolute',
+        top: 48,
+        left: 0,
+        right: 0,
+        justifyContent: 'center'
+      }}>
+        <Animated.View
+          {...this.panResponder.panHandlers}
+          style={[{
+            borderWidth: this.state.selected ? 1 : 0,
+            borderColor: 'blue',
+          }, panStyle]}>
           <View>
             <Image
               source={this.image.source}
@@ -163,8 +161,8 @@ class ImageView extends React.PureComponent<ImageViewProps, any> {
               </TouchableOpacity>
             )
                 */}
-        </View>
-      </Animated.View>
+        </Animated.View>
+      </View>
     )
   }
 }

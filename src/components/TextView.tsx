@@ -107,25 +107,25 @@ class TextView extends React.PureComponent<TextViewProps, any> {
       transform: this.state.pan.getTranslateTransform()
     }
     return (
-      <Animated.View
-        {...this.panResponder.panHandlers}
+      <View
         style={
           [{
             flexDirection: 'row',
             position: 'absolute',
+            justifyContent: 'center',
             top: 48,
             left: 0,
             right: 0,
-            justifyContent: 'center'
-          }, panStyle]
+          }]
         }>
-
-        <View style={{
-          borderWidth: this.state.selected ? 1 : 0,
-          borderColor: 'blue',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
+        <Animated.View
+          {...this.panResponder.panHandlers}
+          style={[{
+            borderWidth: this.state.selected ? 1 : 0,
+            borderColor: 'blue',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }, panStyle]}>
           <Text style={{
             color: 'black',
             textAlign: this.state.textAlign,
@@ -135,9 +135,10 @@ class TextView extends React.PureComponent<TextViewProps, any> {
             {this.state.text}
           </Text>
           {
-            /*this.state.selected && (
+            this.state.selected && (
               <TouchableOpacity
                 onPress={() => {
+                  console.debug('CLOSE')
                   if (this.state.saved) {
 
                   } else {
@@ -146,31 +147,27 @@ class TextView extends React.PureComponent<TextViewProps, any> {
                 }}
                 style={{
                   position: 'absolute',
-                  top: 0,
-                  right: 0,
+                  top: -21,
+                  right: -21,
                 }}>
                 <View style={{
-                  height: 16,
-                  width: 16,
+                  height: 24,
+                  width: 24,
                   alignItems: 'center',
-                  justifyContent: 'center'
+                  justifyContent: 'center',
+                  backgroundColor: 'blue',
+                  borderRadius: 13
                 }}>
-                  {
-                    this.state.saved ?
-                      (
-                        <MaterialCommunityIcons name={'close-circle'} size={18} color={'red'} />
-                      )
-                      :
-                      (
-                        <MaterialCommunityIcons name={'check-circle'} size={18} color={'green'} />
-                      )
-                  }
+                  <MaterialCommunityIcons
+                    name={'close-circle-outline'}
+                    size={24}
+                    color={'red'} />
                 </View>
               </TouchableOpacity>
-            )*/
+            )
           }
-        </View>
-      </Animated.View>
+        </Animated.View>
+      </View>
     )
   }
 }
