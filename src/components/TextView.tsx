@@ -56,7 +56,10 @@ class TextView extends React.PureComponent<TextViewProps, any> {
         if (!this.state.selected) {
           this.props.onFocus({ id: this.props.id, type: 'text' })
         } else {
-
+          /*if (this.state.selected && gestureState.dx === 0
+            && gestureState.dy === 0) {
+            this.props.editText(this.state.text)
+          }*/
         }
 
         return true
@@ -69,10 +72,12 @@ class TextView extends React.PureComponent<TextViewProps, any> {
       },
       onPanResponderRelease: (e, gestureState) => {
         //console.debug('onPanResponderRelease')
+        //if (this.state.selected) {
         if (this.state.selected && gestureState.dx === 0
           && gestureState.dy === 0) {
           this.props.editText(this.state.text)
         }
+        //}
 
         this.state.pan.flattenOffset();
       }

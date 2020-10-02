@@ -125,10 +125,16 @@ class Home extends React.Component<HomeProps, any>{
   }
 
   _textClicked = () => {
+    if (this.selectedView.id !== '')
+      this._setUnselectedEveryThing()
+
     this.setState({ selectedButton: VIEW.TEXT })
   }
 
   _imageClicked = () => {
+    if (this.selectedView.id !== '')
+      this._setUnselectedEveryThing()
+
     this.setState({ selectedButton: VIEW.IMAGE })
   }
 

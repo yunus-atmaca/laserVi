@@ -42,7 +42,7 @@ class ImageView extends React.PureComponent<ImageViewProps, any> {
       onStartShouldSetPanResponderCapture: (evt, gestureState) => {
         //console.debug('onStartShouldSetPanResponderCapture')
         if (!this.state.selected) {
-          this.props.onFocus({ id: this.props.id, type: 'text' })
+          this.props.onFocus({ id: this.props.id, type: 'image' })
         } else {
 
         }
