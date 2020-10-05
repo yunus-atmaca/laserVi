@@ -180,7 +180,11 @@ class TextView extends React.PureComponent<TextViewProps, any> {
   }
 
   componentDidMount() {
-    this.props.onRef({ _setState: this._setState, _setSelected: this._setSelected })
+    this.props.onRef({
+      _setState: this._setState,
+      _setSelected: this._setSelected,
+      _setScaleMode: this._setScaleMode
+    })
   }
 
   _animWidth = () => {
@@ -202,7 +206,15 @@ class TextView extends React.PureComponent<TextViewProps, any> {
   }
 
   componentWillUnmount() {
-    this.props.onRef({ _setState: null, _setSelected: null })
+    this.props.onRef({
+      _setState: null,
+      _setSelected: null,
+      _setScaleMode: null
+    })
+  }
+
+  _setScaleMode = (mode) => {
+    this.isScaleMode = mode
   }
 
   _setState = (state) => {

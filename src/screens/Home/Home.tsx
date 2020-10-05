@@ -66,7 +66,8 @@ class Home extends React.Component<HomeProps, any>{
       showHelperText: true,
       showTempTextInput: false,
       views: [],
-      showSelectedImage: false
+      showSelectedImage: false,
+      scaleSelected: false
     }
 
     this.textCustomization = {
@@ -211,7 +212,13 @@ class Home extends React.Component<HomeProps, any>{
   }
 
   _setUnselectedEveryThing = () => {
+
+    if (this.state.scaleSelected) {
+      this.setState({ scaleSelected: false })
+    }
+
     if (this.selectedView.id !== '') {
+      this.viewsRef[this.selectedView.id]._setScaleMode(false)
       this.viewsRef[this.selectedView.id]._setSelected(null, false)
       this.selectedView = {
         id: '',
@@ -221,11 +228,16 @@ class Home extends React.Component<HomeProps, any>{
   }
 
   _setSelectedView = (view) => {
+    if (this.state.scaleSelected) {
+      this.setState({ scaleSelected: false })
+    }
+
     if (this.selectedView.id === '') {
       this.viewsRef[view.id]._setSelected(null, true)
     } else {
       if (view.id !== this.selectedView.id) {
         //console.debug('FALSE: ' + view.id + ' | | ' + this.selectedView.id)
+        this.viewsRef[this.selectedView.id]._setScaleMode(false)
         this.viewsRef[this.selectedView.id]._setSelected(null, false)
         //this.viewsInfoRef[this.selectedView.id]._setState({ selected: false })
         //this.viewsJSON[this.selectedView.index].view.selected = false
@@ -300,9 +312,19 @@ class Home extends React.Component<HomeProps, any>{
   }
 
   _scaleView = () => {
+    if (this.state.scaleSelected) {
+      this.viewsRef[this.selectedView.id]._setScaleMode(false)
+      this.setState({ scaleSelected: false })
+      return
+    }
+
     if (this.selectedView.id === '') {
       return
     }
+
+    this.setState({ scaleSelected: true }, () => {
+      this.viewsRef[this.selectedView.id]._setScaleMode(true)
+    })
 
   }
 
