@@ -10,7 +10,8 @@ import {
   Platform,
   PixelRatio, Dimensions
 } from 'react-native'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import ViewActionButton from './ViewActionButton'
 
 interface TextCustomizationProps {
   font: string,
@@ -55,7 +56,7 @@ class TextView extends React.PureComponent<TextViewProps, any> {
   constructor(props) {
     super(props)
 
-    this.isScaleMode = true
+    this.isScaleMode = false
 
     this.width = new Animated.Value(0)
     this.height = new Animated.Value(0)
@@ -153,8 +154,13 @@ class TextView extends React.PureComponent<TextViewProps, any> {
               this._animWidth().start()
             })
           }
+          return true
+        } else {
+          return Animated.event([
+            null, { dx: this.state.pan.x, dy: this.state.pan.y }
+          ], { useNativeDriver: false })(evt, gestureState)
         }
-        return true
+
         /*return Animated.event([
           null, { dx: this.state.pan.x, dy: this.state.pan.y }
         ], { useNativeDriver: false })(evt, gestureState)*/
@@ -281,38 +287,6 @@ class TextView extends React.PureComponent<TextViewProps, any> {
             }}>
             {this.state.text}
           </Text>
-          {/*
-            this.state.selected && (
-              <TouchableOpacity
-                onPress={() => {
-                  console.debug('CLOSE')
-                  if (this.state.saved) {
-
-                  } else {
-
-                  }
-                }}
-                style={{
-                  position: 'absolute',
-                  top: -21,
-                  right: -21,
-                }}>
-                <View style={{
-                  height: 24,
-                  width: 24,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'blue',
-                  borderRadius: 13
-                }}>
-                  <MaterialCommunityIcons
-                    name={'close-circle-outline'}
-                    size={24}
-                    color={'red'} />
-                </View>
-              </TouchableOpacity>
-            )
-              */}
         </Animated.View>
       </View>
     )

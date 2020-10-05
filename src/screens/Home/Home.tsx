@@ -15,6 +15,7 @@ import Images from '../../components/Images'
 import HelperText from '../../components/HelperText'
 import TempTextInput from '../../components/TempTextInput'
 import SelectedImage from '../../components/SelectedImage'
+import ViewActionButton from '../../components/ViewActionButton'
 
 import TextView from '../../components/TextView'
 import ImageView from '../../components/ImageView'
@@ -298,6 +299,55 @@ class Home extends React.Component<HomeProps, any>{
     )
   }
 
+  _scaleView = () => {
+    if (this.selectedView.id === '') {
+      return
+    }
+
+  }
+
+  removeView = () => {
+    if (this.selectedView.id === '') {
+      return
+    }
+
+    let views = [...this.state.views]
+
+    let deletedIndex = this._getIndexById(this.selectedView.id)
+
+    if (deletedIndex >= 0) {
+      views.splice(deletedIndex, 1)
+
+      this.selectedView = {
+        type: VIEW.NONE,
+        id: ''
+      }
+
+      //console.debug(this.state.views)
+      this.setState(() => {
+        return {
+          views: views,
+        }
+      })
+    }
+  }
+
+  _getIndexById = (id) => {
+    let index = -1
+
+    let views = [...this.state.views]
+
+    for (let i = 0; i < views.length; ++i) {
+      if (views[i].props.id === id) {
+        index = i
+        break;
+      }
+    }
+
+    return index
+
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -325,6 +375,20 @@ class Home extends React.Component<HomeProps, any>{
                     )
                   })
                 )
+              }
+              {
+                <View style={styles.actionPanel}>
+                  <ViewActionButton
+                    color={this.state.scaleSelected ? '#FF9900' : '#141414'}
+                    name={'move-resize-variant'}
+                    action={this._scaleView}
+                  />
+                  <ViewActionButton
+                    color={'#FF3F3F'}
+                    name={'sticker-remove-outline'}
+                    action={this.removeView}
+                  />
+                </View>
               }
             </View>
           </TouchableWithoutFeedback>
@@ -445,6 +509,15 @@ const styles = StyleSheet.create({
     height: 48,
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row'
+  },
+  actionPanel: {
+    position: 'absolute',
+    bottom: 12,
+    right: 0,
+    justifyContent: 'flex-end',
+    height: 32,
+    width: width,
     flexDirection: 'row'
   }
 })
