@@ -37,7 +37,7 @@ interface selectedViewProps {
 interface TextCustomizationProps {
   font: string,
   style: string,
-  size: number,
+  //size: number,
   align: string
 }
 
@@ -71,7 +71,7 @@ class Home extends React.Component<HomeProps, any>{
     this.textCustomization = {
       font: 'Roboto',
       style: 'Regular',
-      size: 16,
+      //size: 16,
       align: 'left'
     }
 
@@ -96,11 +96,11 @@ class Home extends React.Component<HomeProps, any>{
     if (this.state.selectedButton === VIEW.NONE) {
       console.debug('NOTHING SELECTED')
     } else if (this.state.selectedButton === VIEW.TEXT) {
-      console.debug('TEXT SELECTED')
+      //console.debug('TEXT SELECTED')
 
       this.setState({ showTempTextInput: true })
     } else if (this.state.selectedButton === VIEW.IMAGE) {
-      console.debug('IMAGE SELECTED')
+      //console.debug('IMAGE SELECTED')
       let id = UUID()
 
       let ImageInfo = {
@@ -144,7 +144,7 @@ class Home extends React.Component<HomeProps, any>{
     } else if (props.style) {
       this.textCustomization.style = props.style
     } else if (props.size) {
-      this.textCustomization.size = props.size
+      //this.textCustomization.size = props.size
     } else if (props.align) {
       this.textCustomization.align = props.align
     }
@@ -154,7 +154,7 @@ class Home extends React.Component<HomeProps, any>{
     if (this.selectedView.id !== '') {
       if (this.selectedView.type === VIEW.TEXT) {
         this.viewsRef[this.selectedView.id]._setState({
-          fontSize: this.textCustomization.size,
+          //fontSize: this.textCustomization.size,
           fontFamily: this.textCustomization.font,
           fontStyle: this.textCustomization.style,
           textAlign: this.textCustomization.align
@@ -395,7 +395,7 @@ class Home extends React.Component<HomeProps, any>{
             <TempTextInput
               value={this.selectedView.id === '' ? '' : this.enteredText}
               selectedFont={this.textCustomization.font}
-              selectedSize={this.textCustomization.size}
+              selectedSize={24}
               selectedStyle={this.textCustomization.style}
               textInputDone={this._textInputDone}
               close={() => {

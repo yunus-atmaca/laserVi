@@ -62,12 +62,12 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
   }
 
   _sizeSelected = (size) => {
-    this.setState({
+    /*this.setState({
       selectedSize: size,
       initialIndex: 2
     })
 
-    this.props.customizationSelected({ size: size })
+    this.props.customizationSelected({ size: size })*/
   }
 
   _alignSelected = (align) => {
@@ -92,12 +92,8 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
               index: 1
             },
             {
-              tab: 'Size',
-              index: 2
-            },
-            {
               tab: 'Align',
-              index: 3
+              index: 2
             }
           ]}
           initialIndex={this.state.initialIndex}
@@ -127,19 +123,21 @@ class TextCustomization extends React.Component<TextCustomizationProps, any> {
               data={getStyles(this.state.selectedFont)}
             />
           </View>
-          <View style={{
-            width: width,
-            height: this.props.height - 32,
-            backgroundColor: 'gray'
-          }}>
-            <CustomizeList
-              navigatedFrom={'sizes'}
-              selectedFont={this.state.selectedFont}
-              selectedStyle={this.state.selectedStyle}
-              sizeSelected={this._sizeSelected}
-              data={sizes}
-            />
-          </View>
+          {/*
+            <View style={{
+              width: width,
+              height: this.props.height - 32,
+              backgroundColor: 'gray'
+            }}>
+              <CustomizeList
+                navigatedFrom={'sizes'}
+                selectedFont={this.state.selectedFont}
+                selectedStyle={this.state.selectedStyle}
+                sizeSelected={this._sizeSelected}
+                data={sizes}
+              />
+            </View>
+          */}
           <View style={{
             width: width,
             height: this.props.height - 32,

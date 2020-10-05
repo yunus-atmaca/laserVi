@@ -5,14 +5,17 @@ import {
   PanResponder,
   Animated,
   Text,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Easing,
+  Platform,
+  PixelRatio, Dimensions
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 interface TextCustomizationProps {
   font: string,
   style: string,
-  size: number,
+  //size: number,
   align: string
 }
 
@@ -28,20 +31,63 @@ interface TextViewProps {
   editText: Function
 }
 
+const scale = Dimensions.get('window').width / 320;
+const divided = 20
+
 class TextView extends React.PureComponent<TextViewProps, any> {
   panResponder: any
+
+  incY: number
+  motionY: number
+
+  incX: number
+  motionX: number
+
+  width: any
+  height: any
+
+  onLayoutWidth: any
+  onLayoutHeight: any
+  flagInitial: boolean
+
+  isScaleMode: boolean
+
   constructor(props) {
     super(props)
+
+    this.isScaleMode = true
+
+    this.width = new Animated.Value(0)
+    this.height = new Animated.Value(0)
+
+    this.incY = 1
+    this.motionY = 0
+
+    this.incX = 1
+    this.motionX = 0
+
+    this.flagInitial = true
 
     this.state = {
       selected: this.props.selected,
       saved: this.props.saved,
       text: this.props.text,
-      fontSize: this.props.textCustomization.size,
+      fontSize: 24,
       fontFamily: this.props.textCustomization.font,
       fontStyle: this.props.textCustomization.style,
       textAlign: this.props.textCustomization.align,
-      pan: new Animated.ValueXY()
+      pan: new Animated.ValueXY(),
+
+      width: null,
+      height: null
+      /*width: this.width.interpolate({
+        inputRange: [0, 1],
+        outputRange: [50, 54]
+      }),
+      height: this.width.interpolate({
+        inputRange: [0, 1],
+        outputRange: [50, 54]
+      })*/
     }
 
     this.panResponder = PanResponder.create({
@@ -66,9 +112,52 @@ class TextView extends React.PureComponent<TextViewProps, any> {
       },
 
       onPanResponderMove: (evt, gestureState) => {
-        return Animated.event([
+        if (this.isScaleMode) {
+          if (Math.abs(gestureState.dy - this.motionY) > 1.5) {
+
+            if (gestureState.dy > this.motionY) {
+              this.incY += Math.abs(gestureState.dy / divided)
+            } else {
+              this.incY -= Math.abs(gestureState.dy / divided)
+            }
+
+            this.motionY = gestureState.dy
+
+            this.setState({
+              height: this.height.interpolate({
+                inputRange: [0, 1],
+                outputRange: [this.onLayoutHeight, this.incY]
+              }),
+              fontSize: this._getTextSize(this.incY)
+            }, () => {
+              this._animHeight().start()
+            })
+          }
+
+          if (Math.abs(gestureState.dx - this.motionX) > 1.5) {
+            if (gestureState.dx > this.motionX) {
+              this.incX += Math.abs(gestureState.dx / divided)
+            } else {
+              this.incX -= Math.abs(gestureState.dx / divided)
+            }
+
+            this.motionX = gestureState.dx
+
+            this.setState({
+              width: this.width.interpolate({
+                inputRange: [0, 1],
+                outputRange: [this.onLayoutWidth, this.incX]
+              }),
+              fontSize: this._getTextSize(this.incX)
+            }, () => {
+              this._animWidth().start()
+            })
+          }
+        }
+        return true
+        /*return Animated.event([
           null, { dx: this.state.pan.x, dy: this.state.pan.y }
-        ], { useNativeDriver: false })(evt, gestureState)
+        ], { useNativeDriver: false })(evt, gestureState)*/
       },
       onPanResponderRelease: (e, gestureState) => {
         //console.debug('onPanResponderRelease')
@@ -88,11 +177,30 @@ class TextView extends React.PureComponent<TextViewProps, any> {
     this.props.onRef({ _setState: this._setState, _setSelected: this._setSelected })
   }
 
+  _animWidth = () => {
+    return Animated.timing(this.width, {
+      toValue: 1,
+      duration: 1,
+      useNativeDriver: false,
+      easing: Easing.ease
+    })
+  }
+
+  _animHeight = () => {
+    return Animated.timing(this.height, {
+      toValue: 1,
+      duration: 1,
+      useNativeDriver: false,
+      easing: Easing.ease
+    })
+  }
+
   componentWillUnmount() {
     this.props.onRef({ _setState: null, _setSelected: null })
   }
 
   _setState = (state) => {
+    console.debug(state)
     this.setState(state)
   }
 
@@ -100,6 +208,15 @@ class TextView extends React.PureComponent<TextViewProps, any> {
     this.setState({ selected: selected }, () => {
       callback && callback()
     })
+  }
+
+  _getTextSize = (size) => {
+    const newSize = size * scale
+    if (Platform.OS === 'ios') {
+      return Math.round(PixelRatio.roundToNearestPixel(newSize))
+    } else {
+      return Math.round(PixelRatio.roundToNearestPixel(newSize)) - 2
+    }
   }
 
   render() {
@@ -119,22 +236,52 @@ class TextView extends React.PureComponent<TextViewProps, any> {
           }]
         }>
         <Animated.View
+          onLayout={(e) => {
+            //console.log('On-Layout-1')
+            //console.log(e.nativeEvent.layout.height)
+            //console.log(e.nativeEvent.layout.width)
+
+            if (this.flagInitial) {
+
+              this.onLayoutWidth = e.nativeEvent.layout.width
+              this.onLayoutHeight = e.nativeEvent.layout.height
+
+              this.setState({
+                width: this.width.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [this.onLayoutWidth, this.onLayoutWidth + 1]
+                }),
+                height: this.width.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [this.onLayoutHeight, this.onLayoutHeight + 1]
+                })
+              })
+
+              this.incX = this.onLayoutWidth;
+              this.incY = this.onLayoutHeight;
+
+              this.flagInitial = false
+            }
+          }}
           {...this.panResponder.panHandlers}
           style={[{
             borderWidth: this.state.selected ? 1 : 0,
             borderColor: 'blue',
-            alignItems: 'center',
+            height: this.state.height,
+            width: this.state.width,
             justifyContent: 'center'
           }, panStyle]}>
-          <Text style={{
-            color: 'black',
-            textAlign: this.state.textAlign,
-            fontSize: this.state.fontSize,
-            fontFamily: this.state.fontFamily + '-' + this.state.fontStyle
-          }}>
+          <Text
+
+            adjustsFontSizeToFit={true}
+            style={{
+              textAlign: this.state.textAlign,
+              fontSize: this.state.fontSize,
+              fontFamily: this.state.fontFamily + '-' + this.state.fontStyle,
+            }}>
             {this.state.text}
           </Text>
-          {
+          {/*
             this.state.selected && (
               <TouchableOpacity
                 onPress={() => {
@@ -165,7 +312,7 @@ class TextView extends React.PureComponent<TextViewProps, any> {
                 </View>
               </TouchableOpacity>
             )
-          }
+              */}
         </Animated.View>
       </View>
     )
