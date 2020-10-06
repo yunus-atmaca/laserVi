@@ -83,7 +83,7 @@ class Home extends React.Component<HomeProps, any>{
     }
   }
 
-  _panelClicked = (event) => {
+  _panelClicked = () => {
     console.debug('_panelClicked')
 
     if (this.state.showHelperText) {
@@ -102,7 +102,7 @@ class Home extends React.Component<HomeProps, any>{
 
       this.setState({ showTempTextInput: true })
     } else if (this.state.selectedButton === VIEW.IMAGE) {
-      //console.debug('IMAGE SELECTED')
+      console.debug('IMAGE SELECTED')
       let id = UUID()
 
       let ImageInfo = {
@@ -349,6 +349,7 @@ class Home extends React.Component<HomeProps, any>{
       this.setState(() => {
         return {
           views: views,
+          scaleSelected: false
         }
       })
     }
@@ -367,15 +368,14 @@ class Home extends React.Component<HomeProps, any>{
     }
 
     return index
-
   }
 
   render() {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <TouchableWithoutFeedback onPress={(event) => {
-            this._panelClicked(event)
+          <TouchableWithoutFeedback onPress={() => {
+            this._panelClicked()
           }}>
             <View
               ref={(ref) => {
@@ -428,7 +428,9 @@ class Home extends React.Component<HomeProps, any>{
                   <Images
                     height={styles.addingPanelContainer.height}
                     onImageSelected={(item) => {
+                      console.log(item)
                       this.selectedImage = item
+                      this._panelClicked()
                     }}
                     onLongPressImage={(item) => {
                       this.selectedImage = item

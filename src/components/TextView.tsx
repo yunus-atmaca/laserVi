@@ -81,14 +81,6 @@ class TextView extends React.PureComponent<TextViewProps, any> {
 
       width: null,
       height: null
-      /*width: this.width.interpolate({
-        inputRange: [0, 1],
-        outputRange: [50, 54]
-      }),
-      height: this.width.interpolate({
-        inputRange: [0, 1],
-        outputRange: [50, 54]
-      })*/
     }
 
     this.panResponder = PanResponder.create({
@@ -160,10 +152,6 @@ class TextView extends React.PureComponent<TextViewProps, any> {
             null, { dx: this.state.pan.x, dy: this.state.pan.y }
           ], { useNativeDriver: false })(evt, gestureState)
         }
-
-        /*return Animated.event([
-          null, { dx: this.state.pan.x, dy: this.state.pan.y }
-        ], { useNativeDriver: false })(evt, gestureState)*/
       },
       onPanResponderRelease: (e, gestureState) => {
         //console.debug('onPanResponderRelease')
@@ -218,7 +206,7 @@ class TextView extends React.PureComponent<TextViewProps, any> {
   }
 
   _setState = (state) => {
-    console.debug(state)
+    //console.debug(state)
     this.setState(state)
   }
 

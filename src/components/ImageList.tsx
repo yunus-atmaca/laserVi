@@ -17,7 +17,6 @@ export default function customizeList(props) {
           props.onLongPress(item)
         }}
         onPress={() => {
-          console.debug(index)
           setSelected(index)
           props.onImageSelected(item)
         }}>

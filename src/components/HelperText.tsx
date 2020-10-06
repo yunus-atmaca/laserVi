@@ -18,7 +18,7 @@ export default function helperText(props) {
         fontFamily: 'KronaOne-Regular'
       }}>
         {props.selectedView === 'text' ?
-          'Tab to add text' : 'Tab to add selected image'
+          'Tab to add text' : /*'Tab to add selected image'*/ ''
         }
       </Text>
     </View>
