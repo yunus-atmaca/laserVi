@@ -9,8 +9,6 @@ import {
   Dimensions,
   Easing
 } from 'react-native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { width, height } = Dimensions.get('window')
 
