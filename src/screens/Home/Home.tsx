@@ -86,6 +86,7 @@ class Home extends React.Component<HomeProps, any>{
   _panelClicked = () => {
     console.debug('_panelClicked')
 
+    console.log(this.selectedView.id)
     if (this.state.showHelperText) {
       this.setState({ showHelperText: false })
     }
@@ -390,15 +391,6 @@ class Home extends React.Component<HomeProps, any>{
                 )
               }
               {
-                this.state.views.length > 0 && (
-                  this.state.views.map(view => {
-                    return (
-                      view
-                    )
-                  })
-                )
-              }
-              {
                 <View style={styles.actionPanel}>
                   {/*
                     <View style={{
@@ -443,6 +435,15 @@ class Home extends React.Component<HomeProps, any>{
                     />
                   </View>
                 </View>
+              }
+              {
+                this.state.views.length > 0 && (
+                  this.state.views.map(view => {
+                    return (
+                      view
+                    )
+                  })
+                )
               }
             </View>
           </TouchableWithoutFeedback>
@@ -498,6 +499,7 @@ class Home extends React.Component<HomeProps, any>{
             width: 144,
             borderRadius: 18,
             marginTop: 36,
+            marginBottom: 18,
             alignItems: 'center',
             justifyContent: 'center'
           }}>

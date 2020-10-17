@@ -94,9 +94,11 @@ class TextView extends React.PureComponent<TextViewProps, any> {
           y: this.state.pan.y._value
         });
       },
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
       onStartShouldSetPanResponderCapture: (evt, gestureState) => {
-        //console.debug('onStartShouldSetPanResponderCapture')
+        console.debug('TEXT-onStartShouldSetPanResponderCapture')
         if (!this.state.selected) {
+          console.log('Focus Text')
           this.props.onFocus({ id: this.props.id, type: 'text' })
         } else {
           /*if (this.state.selected && gestureState.dx === 0
@@ -255,7 +257,6 @@ class TextView extends React.PureComponent<TextViewProps, any> {
             top: 48,
             left: 0,
             right: 0,
-            transform: [{ rotate: this.state.currentDegree }]
           }]
         }>
         <Animated.View
@@ -294,11 +295,7 @@ class TextView extends React.PureComponent<TextViewProps, any> {
             width: this.state.width,
             justifyContent: 'center',
 
-          },
-          {
-
-          },
-            panStyle]}>
+          }, panStyle]}>
           <Text
             adjustsFontSizeToFit={true}
             style={{
