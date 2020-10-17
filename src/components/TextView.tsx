@@ -53,6 +53,7 @@ class TextView extends React.PureComponent<TextViewProps, any> {
 
   isScaleMode: boolean
 
+  currentDegree: number
   constructor(props) {
     super(props)
 
@@ -69,6 +70,8 @@ class TextView extends React.PureComponent<TextViewProps, any> {
 
     this.flagInitial = true
 
+    this.currentDegree = 0
+
     this.state = {
       selected: this.props.selected,
       saved: this.props.saved,
@@ -80,7 +83,8 @@ class TextView extends React.PureComponent<TextViewProps, any> {
       pan: new Animated.ValueXY(),
 
       width: null,
-      height: null
+      height: null,
+      currentDegree: '0deg'
     }
 
     this.panResponder = PanResponder.create({
@@ -171,7 +175,7 @@ class TextView extends React.PureComponent<TextViewProps, any> {
     this.props.onRef({
       _setState: this._setState,
       _setSelected: this._setSelected,
-      _setScaleMode: this._setScaleMode
+      _doAction: this._doAction
     })
   }
 
@@ -197,12 +201,24 @@ class TextView extends React.PureComponent<TextViewProps, any> {
     this.props.onRef({
       _setState: null,
       _setSelected: null,
-      _setScaleMode: null
+      _doAction: null
     })
   }
 
-  _setScaleMode = (mode) => {
-    this.isScaleMode = mode
+  _doAction = (action, mode) => {
+    if (action === 'scale') {
+      this.isScaleMode = mode
+    } else if (action === 'turnLeft') {
+      console.debug(this.state.currentDegree)
+      this.currentDegree += -10
+
+      this.setState({ currentDegree: this.currentDegree + 'deg' })
+    } else if (action === 'turnRight') {
+      console.debug(this.state.currentDegree)
+      this.currentDegree += 10
+
+      this.setState({ currentDegree: this.currentDegree + 'deg' })
+    }
   }
 
   _setState = (state) => {
@@ -239,6 +255,7 @@ class TextView extends React.PureComponent<TextViewProps, any> {
             top: 48,
             left: 0,
             right: 0,
+            transform: [{ rotate: this.state.currentDegree }]
           }]
         }>
         <Animated.View
@@ -275,10 +292,14 @@ class TextView extends React.PureComponent<TextViewProps, any> {
             borderColor: 'blue',
             height: this.state.height,
             width: this.state.width,
-            justifyContent: 'center'
-          }, panStyle]}>
-          <Text
+            justifyContent: 'center',
 
+          },
+          {
+
+          },
+            panStyle]}>
+          <Text
             adjustsFontSizeToFit={true}
             style={{
               textAlign: this.state.textAlign,

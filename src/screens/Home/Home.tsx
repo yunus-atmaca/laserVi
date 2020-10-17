@@ -218,7 +218,7 @@ class Home extends React.Component<HomeProps, any>{
     }
 
     if (this.selectedView.id !== '') {
-      this.viewsRef[this.selectedView.id]._setScaleMode(false)
+      this.viewsRef[this.selectedView.id]._doAction('scale', false)
       this.viewsRef[this.selectedView.id]._setSelected(null, false)
       this.selectedView = {
         id: '',
@@ -237,7 +237,7 @@ class Home extends React.Component<HomeProps, any>{
     } else {
       if (view.id !== this.selectedView.id) {
         //console.debug('FALSE: ' + view.id + ' | | ' + this.selectedView.id)
-        this.viewsRef[this.selectedView.id]._setScaleMode(false)
+        this.viewsRef[this.selectedView.id]._doAction('scale', false)
         this.viewsRef[this.selectedView.id]._setSelected(null, false)
         //this.viewsInfoRef[this.selectedView.id]._setState({ selected: false })
         //this.viewsJSON[this.selectedView.index].view.selected = false
@@ -313,7 +313,7 @@ class Home extends React.Component<HomeProps, any>{
 
   _scaleView = () => {
     if (this.state.scaleSelected) {
-      this.viewsRef[this.selectedView.id]._setScaleMode(false)
+      this.viewsRef[this.selectedView.id]._doAction('scale', false)
       this.setState({ scaleSelected: false })
       return
     }
@@ -323,7 +323,7 @@ class Home extends React.Component<HomeProps, any>{
     }
 
     this.setState({ scaleSelected: true }, () => {
-      this.viewsRef[this.selectedView.id]._setScaleMode(true)
+      this.viewsRef[this.selectedView.id]._doAction('scale', true)
     })
 
   }
@@ -400,16 +400,48 @@ class Home extends React.Component<HomeProps, any>{
               }
               {
                 <View style={styles.actionPanel}>
-                  <ViewActionButton
-                    color={this.state.scaleSelected ? '#FF9900' : '#141414'}
-                    name={'move-resize-variant'}
-                    action={this._scaleView}
-                  />
-                  <ViewActionButton
-                    color={'#FF3F3F'}
-                    name={'sticker-remove-outline'}
-                    action={this.removeView}
-                  />
+                  {/*
+                    <View style={{
+                      flexDirection: 'row'
+                    }}>
+
+                      <ViewActionButton
+                        color={'#141414'}
+                        name={'rotate-left'}
+                        action={() => {
+                          if (this.selectedView.id === '')
+                            return;
+
+                          this.viewsRef[this.selectedView.id]._doAction('turnLeft')
+                        }}
+                      />
+                      <ViewActionButton
+                        color={'#141414'}
+                        name={'rotate-right'}
+                        action={() => {
+                          if (this.selectedView.id === '')
+                            return;
+
+                          this.viewsRef[this.selectedView.id]._doAction('turnRight')
+                        }}
+                      />
+
+                    </View>
+                      */}
+                  <View style={{
+                    flexDirection: 'row',
+                  }}>
+                    <ViewActionButton
+                      color={this.state.scaleSelected ? '#FF9900' : '#141414'}
+                      name={'move-resize-variant'}
+                      action={this._scaleView}
+                    />
+                    <ViewActionButton
+                      color={'#FF3F3F'}
+                      name={'sticker-remove-outline'}
+                      action={this.removeView}
+                    />
+                  </View>
                 </View>
               }
             </View>
@@ -539,8 +571,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 12,
     right: 0,
+    paddingHorizontal: 12,
     justifyContent: 'flex-end',
-    height: 32,
+    height: 42,
     width: width,
     flexDirection: 'row'
   }
